@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="wheely">
+    <link name="base">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0" />
+            <geometry>
+                <box size="0.001 0.001 0.001" />
+            </geometry>
+        </visual>
+    </link>
+    <joint name="floating_base" type="fixed">
+        <origin rpy="0 0 0" xyz="0 0 0" />
+        <parent link="base" />
+        <child link="trunk" />
+    </joint>
+    <link name="trunk">
+        <visual>
+            <origin xyz="0.015585846069522939911 0.16761721714529645433 -0.07967009481110459701"
+                rpy="0.087266479572840227608 1.1592872166690008089e-09 -1.3250729495637539251e-08" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/main_body_sim.stl" />
+            </geometry>
+            <material name="main_body_sim_material">
+                <color rgba="0.2313725490196078538 0.38039215686274507888 0.7058823529411765163 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.015585846069522939911 0.16761721714529645433 -0.07967009481110459701"
+                rpy="0.087266479572840227608 1.1592872166690008089e-09 -1.3250729495637539251e-08" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/main_body_sim.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0.015585846069522813276 0.16325942916248678549 -0.029860359980482562708"
+                rpy="0 0 0" />
+            <mass value="1.0520000000000002682" />
+            <inertia ixx="0.0066139164607848287616" ixy="-1.7682651499246315317e-11"
+                ixz="-1.5470365969232099219e-12" iyy="0.0053174843064010216681"
+                iyz="-0.00043473230710836267745" izz="0.010248462186988568576" />
+        </inertial>
+    </link>
+
+    <link name="hip_joint_sim">
+        <visual>
+            <origin xyz="0.032215611636638642745 0.028555101990604007944 -6.9388939039072283776e-18"
+                rpy="1.570796326794896558 2.3580553164154395304e-26 -1.0052549661969301431e-25" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/hip_joint_sim.stl" />
+            </geometry>
+            <material name="hip_joint_sim_material">
+                <color
+                    rgba="0.86666666666666669627 0.32156862745098041545 0.15686274509803921351 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.032215611636638642745 0.028555101990604007944 -6.9388939039072283776e-18"
+                rpy="1.570796326794896558 2.3580553164154395304e-26 -1.0052549661969301431e-25" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/hip_joint_sim.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0.021525592503996222871 3.4694469519536141888e-18 -0.012500000000000009368"
+                rpy="0 0 0" />
+            <mass value="0.00899999999999999932" />
+            <inertia ixx="1.1139804559497151344e-06" ixy="5.8086754015875530345e-31"
+                ixz="2.6905705925099447311e-30" iyy="3.861958513835964132e-06"
+                iyz="2.8514866875938409084e-23" izz="4.0384389697856785015e-06" />
+        </inertial>
+    </link>
+
+    <link name="leg_upper_sim">
+        <visual>
+            <origin xyz="0 0 -0.045000000000000012212"
+                rpy="-1.570796326794896558 -1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/leg_upper_sim.stl" />
+            </geometry>
+            <material name="leg_upper_sim_material">
+                <color
+                    rgba="0.90980392156862743835 0.57254901960784310155 0.16470588235294117418 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 -0.045000000000000012212"
+                rpy="-1.570796326794896558 -1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/leg_upper_sim.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin
+                xyz="6.4367397496827832073e-18 -0.049999999999999981959 -0.022500000000000006106"
+                rpy="0 0 0" />
+            <mass value="0.37599999999999994538" />
+            <inertia ixx="0.00054596018323756516019" ixy="-3.6736756668987036021e-21"
+                ixz="-9.895140610489742317e-30" iyy="9.0305640199817024754e-05"
+                iyz="-1.3919049736874224704e-28" izz="0.00050936582343738242076" />
+        </inertial>
+    </link>
+
+    <link name="leg_lower_sim">
+        <visual>
+            <origin xyz="0 0 -0.024999999999999994449"
+                rpy="-1.570796326794896558 -1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/leg_lower_sim.stl" />
+            </geometry>
+            <material name="leg_lower_sim_material">
+                <color rgba="1 0.7568627450980391913 0.054901960784313724728 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 -0.024999999999999994449"
+                rpy="-1.570796326794896558 -1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/leg_lower_sim.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin
+                xyz="5.9848756682538206176e-18 -0.061136909622975937895 -0.012499999999999993755"
+                rpy="0 0 0" />
+            <mass value="0.058000000000000002942" />
+            <inertia ixx="9.3657217382847509626e-05" ixy="-2.3857696540800339933e-22"
+                ixz="1.7136927500804865691e-29" iyy="9.3296789238021381879e-06"
+                iyz="-1.3665651456574403711e-28" izz="9.6945229639982987888e-05" />
+        </inertial>
+    </link>
+
+    <link name="wheel_sim">
+        <visual>
+            <origin xyz="-0.087087206542491912842 -0.027046862989664081228 -0.014999999999999985567"
+                rpy="-1.570796326794896558 -1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/wheel_sim.stl" />
+            </geometry>
+            <material name="wheel_sim_material">
+                <color
+                    rgba="0.64705882352941179736 0.64705882352941179736 0.64705882352941179736 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="-0.087087206542491912842 -0.027046862989664081228 -0.014999999999999985567"
+                rpy="-1.570796326794896558 -1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/wheel_sim.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin
+                xyz="4.810479871505592532e-20 -6.9388939039072283776e-18 -0.007499999999999986712"
+                rpy="0 0 0" />
+            <mass value="0.036999999999999998168" />
+            <inertia ixx="2.3186407739588025368e-05" ixy="-4.9807254351802205666e-22"
+                ixz="1.3053572872479977881e-30" iyy="2.3186407739588028756e-05"
+                iyz="4.6132351399898749104e-29" izz="4.5033754578493196004e-05" />
+        </inertial>
+    </link>
+
+    <joint name="FRW joint" type="revolute">
+        <origin xyz="1.3877787807814456755e-17 -0.10000000000000000555 -0.024999999999999994449"
+            rpy="8.9722478517019562056e-17 5.550869771051672925e-16 -8.6243853566089590395e-14" />
+        <parent link="leg_lower_sim" />
+        <child link="wheel_sim" />
+        <axis xyz="0 0 1" />
+        <limit effort="3.43" velocity="1.5707" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <joint name="FRK joint" type="revolute">
+        <origin xyz="1.3877787807814456755e-17 -0.099999999999999977796 -0.045000000000000039968"
+            rpy="-2.995620619665353311e-16 -2.0409029304008913286e-16 -3.141592653589793116" />
+        <parent link="leg_upper_sim" />
+        <child link="leg_lower_sim" />
+        <axis xyz="0 0 1" />
+        <limit effort="6.864655" velocity="8.055365759832842" lower="0" upper="3.141592653589793116" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <joint name="FRHL joint" type="revolute">
+        <origin xyz="0.0549999999999999864 6.9388939039072283776e-18 -0.012500000000000004163"
+            rpy="-1.570796326794896558 -1.697312512551477413e-08 1.570796326794896336" />
+        <parent link="hip_joint_sim" />
+        <child link="leg_upper_sim" />
+        <axis xyz="0 0 1" />
+        <limit effort="6.864655" velocity="8.055365759832842" lower="-3.141592653589793116" upper="0" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <joint name="FRHU joint" type="revolute">
+        <origin xyz="-0.059414155593145313861 0.038735093079736430954 -0.04075482985056028129"
+            rpy="1.4835298472220554977 -1.1592875220980075015e-09 3.1415926403390637134" />
+        <parent link="trunk" />
+        <child link="hip_joint_sim" />
+        <axis xyz="0 0 1" />
+        <limit effort="6.864655" velocity="8.055365759832842" lower="-0.75" upper="0.75" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <link name="hip_joint_sim_2">
+        <visual>
+            <origin xyz="0.032215611636638621929 0.028555101990604007944 0"
+                rpy="1.570796326794896558 -1.484709704491313476e-25 5.3370996820186301382e-26" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/hip_joint_sim.stl" />
+            </geometry>
+            <material name="hip_joint_sim_material">
+                <color
+                    rgba="0.86666666666666669627 0.32156862745098041545 0.15686274509803921351 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.032215611636638621929 0.028555101990604007944 0"
+                rpy="1.570796326794896558 -1.484709704491313476e-25 5.3370996820186301382e-26" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/hip_joint_sim.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0.021525592503996202054 3.4694469519536141888e-18 -0.012500000000000002429"
+                rpy="0 0 0" />
+            <mass value="0.00899999999999999932" />
+            <inertia ixx="1.1139804559497151344e-06" ixy="5.4133580507221509624e-31"
+                ixz="-7.9473900997021163377e-30" iyy="3.861958513835964132e-06"
+                iyz="-1.2202827403417080041e-22" izz="4.0384389697856785015e-06" />
+        </inertial>
+    </link>
+
+    <link name="leg_upper_sim_2">
+        <visual>
+            <origin
+                xyz="-6.9388939039072283776e-18 -3.4694469519536141888e-18 2.7755575615628913511e-17"
+                rpy="1.570796326794896558 1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/leg_upper_sim.stl" />
+            </geometry>
+            <material name="leg_upper_sim_material">
+                <color
+                    rgba="0.90980392156862743835 0.57254901960784310155 0.16470588235294117418 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="-6.9388939039072283776e-18 -3.4694469519536141888e-18 2.7755575615628913511e-17"
+                rpy="1.570796326794896558 1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/leg_upper_sim.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin
+                xyz="-1.9401965933927449679e-18 0.049999999999999988898 -0.022499999999999978351"
+                rpy="0 0 0" />
+            <mass value="0.37599999999999994538" />
+            <inertia ixx="0.00054596018323756537703" ixy="6.7350947315973346165e-21"
+                ixz="-6.7906181757271827491e-29" iyy="9.0305640199817051859e-05"
+                iyz="8.072925128848165996e-29" izz="0.00050936582343738242076" />
+        </inertial>
+    </link>
+
+    <link name="leg_lower_sim_2">
+        <visual>
+            <origin xyz="-6.9388939039072283776e-18 0 0"
+                rpy="1.570796326794896558 1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/leg_lower_sim.stl" />
+            </geometry>
+            <material name="leg_lower_sim_material">
+                <color rgba="1 0.7568627450980391913 0.054901960784313724728 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="-6.9388939039072283776e-18 0 0"
+                rpy="1.570796326794896558 1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/leg_lower_sim.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin
+                xyz="-1.7803056235582124656e-18 0.061136909622975944834 -0.012500000000000002429"
+                rpy="0 0 0" />
+            <mass value="0.058000000000000002942" />
+            <inertia ixx="9.3657217382847482521e-05" ixy="4.4236941077579196848e-22"
+                ixz="2.2380568678833325027e-29" iyy="9.3296789238021415761e-06"
+                iyz="-1.9072833451762093138e-29" izz="9.6945229639982987888e-05" />
+        </inertial>
+    </link>
+
+    <link name="wheel_sim_2">
+        <visual>
+            <origin xyz="-0.08708720654249192672 0.027046862989664098575 0"
+                rpy="1.570796326794896558 1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/wheel_sim.stl" />
+            </geometry>
+            <material name="wheel_sim_material">
+                <color
+                    rgba="0.64705882352941179736 0.64705882352941179736 0.64705882352941179736 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="-0.08708720654249192672 0.027046862989664098575 0"
+                rpy="1.570796326794896558 1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/wheel_sim.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin
+                xyz="-1.0689147558701540743e-17 1.3877787807814456755e-17 -0.0074999999999999997224"
+                rpy="0 0 0" />
+            <mass value="0.036999999999999998168" />
+            <inertia ixx="2.3186407739588025368e-05" ixy="-2.7208900002988070909e-21"
+                ixz="1.3289645786860947498e-28" iyy="2.3186407739588042309e-05"
+                iyz="-2.0013011379139741406e-29" izz="4.5033754578493196004e-05" />
+        </inertial>
+    </link>
+
+    <joint name="FLW joint" type="revolute">
+        <origin xyz="-6.9388939039072283776e-18 0.10000000000000001943 -0.024999999999999994449"
+            rpy="-3.9217056321313390979e-24 1.7840755803579285885e-25 -2.2191733635898245325" />
+        <parent link="leg_lower_sim_2" />
+        <child link="wheel_sim_2" />
+        <axis xyz="0 0 1" />
+        <limit effort="3.43" velocity="1.5707" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <joint name="FLK joint" type="revolute">
+        <origin xyz="0 0.10000000000000003331 -0.044999999999999984457"
+            rpy="1.387778657130056109e-17 1.7719557842967524199e-25 -3.141592653589793116" />
+        <parent link="leg_upper_sim_2" />
+        <child link="leg_lower_sim_2" />
+        <axis xyz="0 0 1" />
+        <limit effort="6.864655" velocity="8.055365759832842" lower="-3.141592653589793116" upper="0" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <joint name="FLHL joint" type="revolute">
+        <origin xyz="0.054999999999999965583 0 -0.012500000000000004163"
+            rpy="1.570796326794896558 -1.697312505683743872e-08 -1.57079632679489678" />
+        <parent link="hip_joint_sim_2" />
+        <child link="leg_upper_sim_2" />
+        <axis xyz="0 0 1" />
+        <limit effort="6.864655" velocity="8.055365759832842" lower="0" upper="3.141592653589793116" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <joint name="FLHU joint" type="revolute">
+        <origin xyz="0.090585844406854687527 0.03873509109212703444 -0.040754830024453361781"
+            rpy="-1.4835298472220557198 1.1592868182687392415e-09 -1.325072960991922284e-08" />
+        <parent link="trunk" />
+        <child link="hip_joint_sim_2" />
+        <axis xyz="0 0 1" />
+        <limit effort="6.864655" velocity="8.055365759832842" lower="-0.75" upper="0.75" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <link name="hip_joint_sim_3">
+        <visual>
+            <origin xyz="0.032215611636638621929 -0.028555101990604007944 -0.025000000000000022204"
+                rpy="-1.570796326794896558 6.7192618071082185633e-25 -1.0295883003064848013e-25" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/hip_joint_sim.stl" />
+            </geometry>
+            <material name="hip_joint_sim_material">
+                <color
+                    rgba="0.86666666666666669627 0.32156862745098041545 0.15686274509803921351 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.032215611636638621929 -0.028555101990604007944 -0.025000000000000022204"
+                rpy="-1.570796326794896558 6.7192618071082185633e-25 -1.0295883003064848013e-25" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/hip_joint_sim.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin
+                xyz="0.021525592503996202054 -3.4694469519536141888e-18 -0.012500000000000019776"
+                rpy="0 0 0" />
+            <mass value="0.00899999999999999932" />
+            <inertia ixx="1.1139804559497151344e-06" ixy="9.0059698357691907943e-31"
+                ixz="4.9036820056156890493e-30" iyy="3.861958513835964132e-06"
+                iyz="3.3881593816857189275e-23" izz="4.0384389697856785015e-06" />
+        </inertial>
+    </link>
+
+    <link name="leg_upper_sim_3">
+        <visual>
+            <origin xyz="0 -5.5511151231257827021e-17 -2.7755575615628913511e-17"
+                rpy="1.570796326794896558 1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/leg_upper_sim.stl" />
+            </geometry>
+            <material name="leg_upper_sim_material">
+                <color
+                    rgba="0.90980392156862743835 0.57254901960784310155 0.16470588235294117418 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 -5.5511151231257827021e-17 -2.7755575615628913511e-17"
+                rpy="1.570796326794896558 1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/leg_upper_sim.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="5.9004051887530249307e-18 0.049999999999999926448 -0.022500000000000033862"
+                rpy="0 0 0" />
+            <mass value="0.37599999999999994538" />
+            <inertia ixx="0.00054596018323756559387" ixy="4.2907247969289986257e-21"
+                ixz="3.3275346616842551713e-29" iyy="9.0305640199817024754e-05"
+                iyz="9.1967548615632482885e-29" izz="0.00050936582343738242076" />
+        </inertial>
+    </link>
+
+    <link name="leg_lower_sim_3">
+        <visual>
+            <origin xyz="0 5.5511151231257827021e-17 0"
+                rpy="1.570796326794896558 1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/leg_lower_sim.stl" />
+            </geometry>
+            <material name="leg_lower_sim_material">
+                <color rgba="1 0.7568627450980391913 0.054901960784313724728 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 5.5511151231257827021e-17 0"
+                rpy="1.570796326794896558 1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/leg_lower_sim.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="5.0787577489372815897e-18 0.061136909622976000345 -0.012500000000000002429"
+                rpy="0 0 0" />
+            <mass value="0.058000000000000002942" />
+            <inertia ixx="9.3657217382847509626e-05" ixy="-1.0566982703049037534e-21"
+                ixz="5.1436861051250829201e-30" iyy="9.3296789238021415761e-06"
+                iyz="-3.9866687957020066922e-29" izz="9.6945229639982987888e-05" />
+        </inertial>
+    </link>
+
+    <link name="wheel_sim_3">
+        <visual>
+            <origin xyz="-0.087087206542491898964 0.027046862989664022248 2.7755575615628913511e-17"
+                rpy="1.570796326794896558 1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/wheel_sim.stl" />
+            </geometry>
+            <material name="wheel_sim_material">
+                <color
+                    rgba="0.64705882352941179736 0.64705882352941179736 0.64705882352941179736 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="-0.087087206542491898964 0.027046862989664022248 2.7755575615628913511e-17"
+                rpy="1.570796326794896558 1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/wheel_sim.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin
+                xyz="1.3877787807814456755e-17 -5.5511151231257827021e-17 -0.0074999999999999719669"
+                rpy="0 0 0" />
+            <mass value="0.036999999999999998168" />
+            <inertia ixx="2.3186407739588025368e-05" ixy="0" ixz="0" iyy="2.3186407739588028756e-05"
+                iyz="3.1948813329757786388e-29" izz="4.5033754578493196004e-05" />
+        </inertial>
+    </link>
+
+    <joint name="BLW joint" type="revolute">
+        <origin xyz="0 0.10000000000000003331 -0.024999999999999994449"
+            rpy="-1.4162014954362229083e-24 -0 -3.0543261909901313622" />
+        <parent link="leg_lower_sim_3" />
+        <child link="wheel_sim_3" />
+        <axis xyz="0 0 1" />
+        <limit effort="3.43" velocity="1.5707" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <joint name="BLK joint" type="revolute">
+        <origin xyz="1.3877787807814456755e-17 0.099999999999999922284 -0.045000000000000012212"
+            rpy="9.4730836872721032061e-24 5.0888239931834112832e-25 -3.141592653589793116" />
+        <parent link="leg_upper_sim_3" />
+        <child link="leg_lower_sim_3" />
+        <axis xyz="0 0 1" />
+        <limit effort="6.864655" velocity="8.055365759832842" lower="-3.141592653589793116" upper="0" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <joint name="BLHL joint" type="revolute">
+        <origin xyz="0.055000000000000007216 -6.9388939039072283776e-18 -0.012500000000000066613"
+            rpy="-1.570796326794896558 1.6973125989423479739e-08 1.57079632679489678" />
+        <parent link="hip_joint_sim_3" />
+        <child link="leg_upper_sim_3" />
+        <axis xyz="0 0 1" />
+        <limit effort="6.864655" velocity="8.055365759832842" lower="0" upper="3.141592653589793116" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <joint name="BLHU joint" type="revolute">
+        <origin xyz="0.090585847732190916126 0.28778376524523707758 -0.018965890110404851066"
+            rpy="1.6580628063677349537 1.159286201457635821e-09 -1.3250729804689327159e-08" />
+        <parent link="trunk" />
+        <child link="hip_joint_sim_3" />
+        <axis xyz="0 0 1" />
+        <limit effort="6.864655" velocity="8.055365759832842" lower="-0.75" upper="0.75" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <link name="hip_joint_sim_4">
+        <visual>
+            <origin xyz="0.032215611636638649684 -0.028555101990603997536 -0.025000000000000077716"
+                rpy="-1.570796326794896558 -1.9820561291419447928e-24 1.9562839624616232788e-24" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/hip_joint_sim.stl" />
+            </geometry>
+            <material name="hip_joint_sim_material">
+                <color
+                    rgba="0.86666666666666669627 0.32156862745098041545 0.15686274509803921351 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0.032215611636638649684 -0.028555101990603997536 -0.025000000000000077716"
+                rpy="-1.570796326794896558 -1.9820561291419447928e-24 1.9562839624616232788e-24" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/hip_joint_sim.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0.02152559250399622981 6.9388939039072283776e-18 -0.012500000000000075287"
+                rpy="0 0 0" />
+            <mass value="0.00899999999999999932" />
+            <inertia ixx="1.1139804559497151344e-06" ixy="4.1772076549073753771e-31"
+                ixz="-6.1343050970541535851e-30" iyy="3.861958513835964132e-06"
+                iyz="-6.3994577933147648704e-23" izz="4.0384389697856785015e-06" />
+        </inertial>
+    </link>
+
+    <link name="leg_upper_sim_4">
+        <visual>
+            <origin xyz="0 0 -0.045000000000000012212"
+                rpy="-1.570796326794896558 -1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/leg_upper_sim.stl" />
+            </geometry>
+            <material name="leg_upper_sim_material">
+                <color
+                    rgba="0.90980392156862743835 0.57254901960784310155 0.16470588235294117418 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="0 0 -0.045000000000000012212"
+                rpy="-1.570796326794896558 -1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/leg_upper_sim.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin
+                xyz="5.1882295258215660955e-18 -0.049999999999999988898 -0.022500000000000009576"
+                rpy="0 0 0" />
+            <mass value="0.37599999999999994538" />
+            <inertia ixx="0.00054596018323756537703" ixy="1.3556944700226467858e-21"
+                ixz="-1.3488944768734479029e-27" iyy="9.0305640199817051859e-05"
+                iyz="1.0933884475067676071e-27" izz="0.00050936582343738220392" />
+        </inertial>
+    </link>
+
+    <link name="leg_lower_sim_4">
+        <visual>
+            <origin
+                xyz="6.9388939039072283776e-18 5.5511151231257827021e-17 -0.024999999999999994449"
+                rpy="-1.570796326794896558 -1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/leg_lower_sim.stl" />
+            </geometry>
+            <material name="leg_lower_sim_material">
+                <color rgba="1 0.7568627450980391913 0.054901960784313724728 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin
+                xyz="6.9388939039072283776e-18 5.5511151231257827021e-17 -0.024999999999999994449"
+                rpy="-1.570796326794896558 -1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/leg_lower_sim.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="1.0859552386685261313e-17 -0.0611369096229759032 -0.012499999999999993755"
+                rpy="0 0 0" />
+            <mass value="0.058000000000000002942" />
+            <inertia ixx="9.3657217382847509626e-05" ixy="1.6253604756349434722e-21"
+                ixz="2.7240064655656153407e-31" iyy="9.3296789238021449642e-06"
+                iyz="-1.4839605034452385574e-28" izz="9.6945229639982960783e-05" />
+        </inertial>
+    </link>
+
+    <link name="wheel_sim_4">
+        <visual>
+            <origin xyz="-0.087087206542491940597 -0.027046862989664077759 -0.014999999999999957812"
+                rpy="-1.570796326794896558 -1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/wheel_sim.stl" />
+            </geometry>
+            <material name="wheel_sim_material">
+                <color
+                    rgba="0.64705882352941179736 0.64705882352941179736 0.64705882352941179736 1.0" />
+            </material>
+        </visual>
+        <collision>
+            <origin xyz="-0.087087206542491940597 -0.027046862989664077759 -0.014999999999999957812"
+                rpy="-1.570796326794896558 -1.570796326794896558 0" />
+            <geometry>
+                <mesh filename="../meshes/V2.6/wheel_sim.stl" />
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="-2.8047465406184179424e-17 0 -0.0074999999999999580891" rpy="0 0 0" />
+            <mass value="0.036999999999999998168" />
+            <inertia ixx="2.3186407739588025368e-05" ixy="-2.4661637863477947957e-22"
+                ixz="2.5895774586331946966e-29" iyy="2.3186407739588028756e-05"
+                iyz="3.0706605826852009233e-28" izz="4.5033754578493196004e-05" />
+        </inertial>
+    </link>
+
+    <joint name="BRW joint" type="revolute">
+        <origin xyz="6.9388939039072283776e-18 -0.10000000000000003331 -0.024999999999999994449"
+            rpy="-4.6448383265960407329e-18 -7.1059407146169704959e-18 1.5707960522858872565" />
+        <parent link="leg_lower_sim_4" />
+        <child link="wheel_sim_4" />
+        <axis xyz="0 0 1" />
+        <limit effort="3.43" velocity="1.5707" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <joint name="BRK joint" type="revolute">
+        <origin xyz="1.3877787807814456755e-17 -0.099999999999999977796 -0.045000000000000012212"
+            rpy="-1.7440140067706183909e-24 -9.5749145050251897213e-24 -3.141592653589793116" />
+        <parent link="leg_upper_sim_4" />
+        <child link="leg_lower_sim_4" />
+        <axis xyz="0 0 1" />
+        <limit effort="6.864655" velocity="8.055365759832842" lower="0" upper="3.141592653589793116" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <joint name="BRHL joint" type="revolute">
+        <origin xyz="0.054999999999999993339 0 -0.012500000000000066613"
+            rpy="1.570796326794896558 7.007595260149741668e-09 -1.570796326794896558" />
+        <parent link="hip_joint_sim_4" />
+        <child link="leg_upper_sim_4" />
+        <axis xyz="0 0 1" />
+        <limit effort="6.864655" velocity="8.055365759832842" lower="-3.141592653589793116" upper="0" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+    <joint name="BRHU joint" type="revolute">
+        <origin xyz="-0.059414152267808856278 0.28778376723284659899 -0.018965889936511763636"
+            rpy="-1.6580628063677369521 -2.1430954532537406336e-08 3.1415926421126050272" />
+        <parent link="trunk" />
+        <child link="hip_joint_sim_4" />
+        <axis xyz="0 0 1" />
+        <limit effort="6.864655" velocity="8.055365759832842" lower="-0.75" upper="0.75" />
+        <joint_properties friction="0.0" />
+    </joint>
+
+
+</robot>

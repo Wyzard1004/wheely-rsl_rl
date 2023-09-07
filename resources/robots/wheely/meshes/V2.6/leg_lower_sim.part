@@ -1,0 +1,13 @@
+{
+    "configuration": "default",
+    "documentId": "f028ddc671835c94395844f1",
+    "documentMicroversion": "eed10897ded47ebcfa7769e4",
+    "elementId": "ae958b9d01bae2a40dabc60b",
+    "fullConfiguration": "default",
+    "id": "M128AveXyEdaRicvW",
+    "isStandardContent": false,
+    "name": "Leg Lower Sim <14>",
+    "partId": "JHD",
+    "suppressed": false,
+    "type": "Part"
+}

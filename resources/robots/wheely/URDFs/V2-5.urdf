@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="wheely">
+	<link name="base">
+		<visual>
+			<origin rpy="0 0 0" xyz="4.16334e-17 -2.08167e-17 -0.1"/>
+			<geometry>
+			<box size="0.001 0.001 0.001"/>
+			</geometry>
+		</visual>
+  	</link>
+	<joint name="floating_base" type="fixed">
+		<origin rpy="0 0 0" xyz="0 0 0"/>
+		<parent link="base"/>
+		<child link="trunk"/>
+  	</joint>
+	<link name="trunk">
+		<visual>
+			<origin xyz="4.16334e-17 -2.08167e-17 -0.1" rpy="0 -0 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/main_body_sim.stl"/>
+			</geometry>
+			<material name="main_body_sim_material">
+				<color rgba="0.231373 0.380392 0.705882 1.0"/>
+			</material>
+		</visual>
+		<collision>
+			<origin xyz="4.16334e-17 -2.08167e-17 -0.1" rpy="0 -0 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/main_body_sim.stl"/>
+			</geometry>
+			<material name="main_body_sim_material">
+				<color rgba="0.231373 0.380392 0.705882 1.0"/>
+			</material>
+		</collision>
+		<inertial>
+			<origin xyz="-1.16129e-17 6.27325e-18 -0.05" rpy="0 0 0"/>
+			<mass value="6.10065" />
+			<inertia ixx="0.383547" ixy="0"  ixz="0" iyy="0.30616" iyz="0" izz="0.596523" />
+		</inertial>
+	</link>
+	<link name="hip_joint_sim">
+		<visual>
+			<origin xyz="0.0322156 0.0285551 -2.77556e-17" rpy="1.5708 -4.47279e-60 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/hip_joint_sim.stl"/>
+			</geometry>
+			<material name="hip_joint_sim_material">
+				<color rgba="0.866667 0.321569 0.156863 1.0"/>
+			</material>
+		</visual>
+		<collision>
+			<origin xyz="0.0322156 0.0285551 -2.77556e-17" rpy="1.5708 -4.47279e-60 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/hip_joint_sim.stl"/>
+			</geometry>
+			<material name="hip_joint_sim_material">
+				<color rgba="0.866667 0.321569 0.156863 1.0"/>
+			</material>
+		</collision>
+		<inertial>
+			<origin xyz="0.0215256 0 -0.0125" rpy="0 0 0"/>
+			<mass value="0.0526902" />
+			<inertia ixx="6.52176e-05" ixy="1.30299e-64"  ixz="-3.17118e-37" iyy="2.26097e-04" iyz="0" izz="2.36429e-04" />
+		</inertial>
+	</link>
+	<link name="leg_upper_sim">
+		<visual>
+			<origin xyz="-2.77556e-17 1.38778e-17 -0.045" rpy="-1.5708 -1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/leg_upper_sim.stl"/>
+			</geometry>
+			<material name="leg_upper_sim_material">
+				<color rgba="0.909804 0.572549 0.164706 1.0"/>
+			</material>
+		</visual>
+		<collision>
+			<origin xyz="-2.77556e-17 1.38778e-17 -0.045" rpy="-1.5708 -1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/leg_upper_sim.stl"/>
+			</geometry>
+			<material name="leg_upper_sim_material">
+				<color rgba="0.909804 0.572549 0.164706 1.0"/>
+			</material>
+		</collision>
+		<inertial>
+			<origin xyz="-2.50512e-17 -0.05 -0.0225" rpy="0 0 0"/>
+			<mass value="0.175483" />
+			<inertia ixx="4.21465e-04" ixy="-2.45739e-36"  ixz="-1.21994e-52" iyy="0.00237726" iyz="-9.48071e-22" izz="0.00254805" />
+		</inertial>
+	</link>
+	<link name="leg_lower_sim">
+		<visual>
+			<origin xyz="3.46945e-17 0 -0.025" rpy="-1.5708 -1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/leg_lower_sim.stl"/>
+			</geometry>
+			<material name="leg_lower_sim_material">
+				<color rgba="1 0.756863 0.054902 1.0"/>
+			</material>
+		</visual>
+		<collision>
+			<origin xyz="3.46945e-17 0 -0.025" rpy="-1.5708 -1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/leg_lower_sim.stl"/>
+			</geometry>
+			<material name="leg_lower_sim_material">
+				<color rgba="1 0.756863 0.054902 1.0"/>
+			</material>
+		</collision>
+		<inertial>
+			<origin xyz="3.96927e-17 -0.0611369 -0.0125" rpy="0 0 0"/>
+			<mass value="0.121368" />
+			<inertia ixx="1.95228e-04" ixy="-5.48221e-36"  ixz="-4.35005e-36" iyy="0.00202862" iyz="-1.18643e-68" izz="0.00195982" />
+		</inertial>
+	</link>
+	<link name="wheel_sim">
+		<visual>
+			<origin xyz="-0.0870872 -0.0270469 -0.015" rpy="-1.5708 -1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/wheel_sim.stl"/>
+			</geometry>
+			<material name="wheel_sim_material">
+				<color rgba="0.647059 0.647059 0.647059 1.0"/>
+			</material>
+		</visual>
+		<collision>
+			<origin xyz="-0.0870872 -0.0270469 -0.015" rpy="-1.5708 -1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/wheel_sim.stl"/>
+			</geometry>
+			<material name="wheel_sim_material">
+				<color rgba="0.647059 0.647059 0.647059 1.0"/>
+			</material>
+		</collision>
+		<inertial>
+			<origin xyz="1.38778e-17 3.1225e-17 -0.0075" rpy="0 0 0"/>
+			<mass value="0.120469" />
+			<inertia ixx="7.54929e-04" ixy="8.93848e-37"  ixz="0" iyy="0.00146626" iyz="0" izz="7.54929e-04" />
+		</inertial>
+	</link>
+	<joint name="Front Right Wheel joint" type="revolute">
+		<origin xyz="1.38778e-17 -0.1 -0.025" rpy="-1.12604e-16 -1.42411e-16 0.785398" />
+		<parent link="leg_lower_sim" />
+		<child link="wheel_sim" />
+		<axis xyz="0 0 1"/>
+		<limit effort="5" velocity="20" />
+		<joint_properties friction="0.0"/>
+	</joint>
+	<joint name="Front Right Knee joint" type="revolute">
+		<origin xyz="-2.77556e-17 -0.1 -0.045" rpy="8.31169e-17 1.9411e-16 -1.43715" />
+		<parent link="leg_upper_sim" />
+		<child link="leg_lower_sim" />
+		<axis xyz="0 0 1"/>
+		<limit effort="5" velocity="20" />
+		<joint_properties friction="0.0"/>
+	</joint>
+	<joint name="Front Right Hip Lower joint" type="revolute">
+		<origin xyz="0.055 0 -0.0125" rpy="-1.5708 -0.919042 1.5708" />
+		<parent link="hip_joint_sim" />
+		<child link="leg_upper_sim" />
+		<axis xyz="0 0 1"/>
+		<limit effort="5" velocity="20" />
+		<joint_properties friction="0.0"/>
+	</joint>
+	<joint name="Front Right Hip joint" type="revolute">
+		<origin xyz="-0.075 -0.125 -0.05" rpy="1.5708 1.97215e-31 3.14159" />
+		<parent link="trunk" />
+		<child link="hip_joint_sim" />
+		<axis xyz="0 0 1"/>
+		<limit effort="5" velocity="20" lower="-1.5708" upper="1.5708"/>
+		<joint_properties friction="0.0"/>
+	</joint>
+	<link name="hip_joint_sim_2">
+		<visual>
+			<origin xyz="0.0322156 0.0285551 0" rpy="1.5708 -0 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/hip_joint_sim.stl"/>
+			</geometry>
+			<material name="hip_joint_sim_material">
+				<color rgba="0.866667 0.321569 0.156863 1.0"/>
+			</material>
+		</visual>
+		<collision>
+			<origin xyz="0.0322156 0.0285551 0" rpy="1.5708 -0 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/hip_joint_sim.stl"/>
+			</geometry>
+			<material name="hip_joint_sim_material">
+				<color rgba="0.866667 0.321569 0.156863 1.0"/>
+			</material>
+		</collision>
+		<inertial>
+			<origin xyz="0.0215256 0 -0.0125" rpy="0 0 0"/>
+			<mass value="0.0526902" />
+			<inertia ixx="6.52176e-04" ixy="1.59652e-100"  ixz="0" iyy="2.26097e-03" iyz="0" izz="2.36429e-03" />
+		</inertial>
+	</link>
+	<link name="leg_upper_sim_2">
+		<visual>
+			<origin xyz="-2.77556e-17 6.93889e-18 0" rpy="1.5708 1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/leg_upper_sim.stl"/>
+			</geometry>
+			<material name="leg_upper_sim_material">
+				<color rgba="0.909804 0.572549 0.164706 1.0"/>
+			</material>
+		</visual>
+		<collision>
+			<origin xyz="-2.77556e-17 6.93889e-18 0" rpy="1.5708 1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/leg_upper_sim.stl"/>
+			</geometry>
+			<material name="leg_upper_sim_material">
+				<color rgba="0.909804 0.572549 0.164706 1.0"/>
+			</material>
+		</collision>
+		<inertial>
+			<origin xyz="-1.95e-17 0.05 -0.0225" rpy="0 0 0"/>
+			<mass value="0.175483" />
+			<inertia ixx="4.21465e-03" ixy="-2.59748e-37"  ixz="0" iyy="0.0237726" iyz="-1.31964e-20" izz="0.0254805" />
+		</inertial>
+	</link>
+	<link name="leg_lower_sim_2">
+		<visual>
+			<origin xyz="2.08167e-17 0 0" rpy="1.5708 1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/leg_lower_sim.stl"/>
+			</geometry>
+			<material name="leg_lower_sim_material">
+				<color rgba="1 0.756863 0.054902 1.0"/>
+			</material>
+		</visual>
+		<collision>
+			<origin xyz="2.08167e-17 0 0" rpy="1.5708 1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/leg_lower_sim.stl"/>
+			</geometry>
+			<material name="leg_lower_sim_material">
+				<color rgba="1 0.756863 0.054902 1.0"/>
+			</material>
+		</collision>
+		<inertial>
+			<origin xyz="3.26025e-17 0.0611369 -0.0125" rpy="0 0 0"/>
+			<mass value="0.121368" />
+			<inertia ixx="1.95228e-03" ixy="0"  ixz="0" iyy="0.0202862" iyz="-3.34014e-20" izz="0.0195982" />
+		</inertial>
+	</link>
+	<link name="wheel_sim_2">
+		<visual>
+			<origin xyz="-0.0870872 0.0270469 2.77556e-17" rpy="1.5708 1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/wheel_sim.stl"/>
+			</geometry>
+			<material name="wheel_sim_material">
+				<color rgba="0.647059 0.647059 0.647059 1.0"/>
+			</material>
+		</visual>
+		<collision>
+			<origin xyz="-0.0870872 0.0270469 2.77556e-17" rpy="1.5708 1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/wheel_sim.stl"/>
+			</geometry>
+			<material name="wheel_sim_material">
+				<color rgba="0.647059 0.647059 0.647059 1.0"/>
+			</material>
+		</collision>
+		<inertial>
+			<origin xyz="-4.16334e-17 -1.73472e-17 -0.0075" rpy="0 0 0"/>
+			<mass value="0.120469" />
+			<inertia ixx="7.54929e-04" ixy="-1.36891e-36"  ixz="-9.30522e-37" iyy="0.00146626" iyz="-2.04695e-20" izz="7.54929e-04" />
+		</inertial>
+	</link>
+	<joint name="Front Left Wheel joint" type="revolute">
+		<origin xyz="6.93889e-17 0.1 -0.025" rpy="0 -0 -1.5708" />
+		<parent link="leg_lower_sim_2" />
+		<child link="wheel_sim_2" />
+		<axis xyz="0 0 1"/>
+		<limit effort="5" velocity="20" />
+		<joint_properties friction="0.0"/>
+	</joint>
+	<joint name="Front Left Knee joint" type="revolute">
+		<origin xyz="-2.77556e-17 0.1 -0.045" rpy="-7.40642e-28 6.77878e-28 1.5708" />
+		<parent link="leg_upper_sim_2" />
+		<child link="leg_lower_sim_2" />
+		<axis xyz="0 0 1"/>
+		<limit effort="5" velocity="20" />
+		<joint_properties friction="0.0"/>
+	</joint>
+	<joint name="Front Left Hip Lower joint" type="revolute">
+		<origin xyz="0.055 0 -0.0125" rpy="1.5708 -0.922419 -1.5708" />
+		<parent link="hip_joint_sim_2" />
+		<child link="leg_upper_sim_2" />
+		<axis xyz="0 0 1"/>
+		<limit effort="5" velocity="20" />
+		<joint_properties friction="0.0"/>
+	</joint>
+	<joint name="Front Left Hip joint" type="revolute">
+		<origin xyz="0.075 -0.125 -0.05" rpy="-1.5708 -0 3.69779e-32" />
+		<parent link="trunk" />
+		<child link="hip_joint_sim_2" />
+		<axis xyz="0 0 1"/>
+		<limit effort="5" velocity="20" lower="-1.5708" upper="1.5708"/>
+		<joint_properties friction="0.0"/>
+	</joint>
+	<link name="hip_joint_sim_3">
+		<visual>
+			<origin xyz="0.0322156 -0.0285551 -0.025" rpy="-1.5708 -0 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/hip_joint_sim.stl"/>
+			</geometry>
+			<material name="hip_joint_sim_material">
+				<color rgba="0.866667 0.321569 0.156863 1.0"/>
+			</material>
+		</visual>
+		<collision>
+			<origin xyz="0.0322156 -0.0285551 -0.025" rpy="-1.5708 -0 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/hip_joint_sim.stl"/>
+			</geometry>
+			<material name="hip_joint_sim_material">
+				<color rgba="0.866667 0.321569 0.156863 1.0"/>
+			</material>
+		</collision>
+		<inertial>
+			<origin xyz="0.0215256 6.93889e-18 -0.0125" rpy="0 0 0"/>
+			<mass value="0.0526902" />
+			<inertia ixx="6.52176e-04" ixy="2.23118e-53"  ixz="0" iyy="2.26097e-03" iyz="0" izz="2.36429e-03" />
+		</inertial>
+	</link>
+	<link name="leg_upper_sim_3">
+		<visual>
+			<origin xyz="0 6.93889e-18 0" rpy="1.5708 1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/leg_upper_sim.stl"/>
+			</geometry>
+			<material name="leg_upper_sim_material">
+				<color rgba="0.909804 0.572549 0.164706 1.0"/>
+			</material>
+		</visual>
+		<collision>
+			<origin xyz="0 6.93889e-18 0" rpy="1.5708 1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/leg_upper_sim.stl"/>
+			</geometry>
+			<material name="leg_upper_sim_material">
+				<color rgba="0.909804 0.572549 0.164706 1.0"/>
+			</material>
+		</collision>
+		<inertial>
+			<origin xyz="8.25554e-18 0.05 -0.0225" rpy="0 0 0"/>
+			<mass value="0.175483" />
+			<inertia ixx="4.21465e-04" ixy="-3.48689e-52"  ixz="-5.24243e-36" iyy="0.00237726" iyz="9.48071e-22" izz="0.00254805" />
+		</inertial>
+	</link>
+	<link name="leg_lower_sim_3">
+		<visual>
+			<origin xyz="-2.08167e-17 2.77556e-17 -2.77556e-17" rpy="1.5708 1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/leg_lower_sim.stl"/>
+			</geometry>
+			<material name="leg_lower_sim_material">
+				<color rgba="1 0.756863 0.054902 1.0"/>
+			</material>
+		</visual>
+		<collision>
+			<origin xyz="-2.08167e-17 2.77556e-17 -2.77556e-17" rpy="1.5708 1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/leg_lower_sim.stl"/>
+			</geometry>
+			<material name="leg_lower_sim_material">
+				<color rgba="1 0.756863 0.054902 1.0"/>
+			</material>
+		</collision>
+		<inertial>
+			<origin xyz="-1.58184e-17 0.0611369 -0.0125" rpy="0 0 0"/>
+			<mass value="0.121368" />
+			<inertia ixx="1.95228e-04" ixy="-2.40637e-37"  ixz="9.66265e-36" iyy="0.00202862" iyz="0" izz="0.00195982" />
+		</inertial>
+	</link>
+	<link name="wheel_sim_3">
+		<visual>
+			<origin xyz="-0.0870872 0.0270469 -2.77556e-17" rpy="1.5708 1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/wheel_sim.stl"/>
+			</geometry>
+			<material name="wheel_sim_material">
+				<color rgba="0.647059 0.647059 0.647059 1.0"/>
+			</material>
+		</visual>
+		<collision>
+			<origin xyz="-0.0870872 0.0270469 -2.77556e-17" rpy="1.5708 1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/wheel_sim.stl"/>
+			</geometry>
+			<material name="wheel_sim_material">
+				<color rgba="0.647059 0.647059 0.647059 1.0"/>
+			</material>
+		</collision>
+		<inertial>
+			<origin xyz="1.38778e-17 -3.46945e-18 -0.0075" rpy="0 0 0"/>
+			<mass value="0.120469" />
+			<inertia ixx="7.54929e-04" ixy="-1.86228e-37"  ixz="0" iyy="0.00146626" iyz="0" izz="7.54929e-04" />
+		</inertial>
+	</link>
+	<joint name="Back Left Wheel joint" type="revolute">
+		<origin xyz="-1.38778e-17 0.1 -0.025" rpy="-3.55155e-16 3.18225e-16 0.785398" />
+		<parent link="leg_lower_sim_3" />
+		<child link="wheel_sim_3" />
+		<axis xyz="0 0 1"/>
+		<limit effort="5" velocity="20" />
+		<joint_properties friction="0.0"/>
+	</joint>
+	<joint name="Back Left Knee joint" type="revolute">
+		<origin xyz="0 0.1 -0.045" rpy="2.35496e-16 9.6102e-17 -1.48353" />
+		<parent link="leg_upper_sim_3" />
+		<child link="leg_lower_sim_3" />
+		<axis xyz="0 0 1"/>
+		<limit effort="5" velocity="20" />
+		<joint_properties friction="0.0"/>
+	</joint>
+	<joint name="Back Left Hip Lower joint" type="revolute">
+		<origin xyz="0.055 6.93889e-18 -0.0125" rpy="1.5708 0.872665 -1.5708" />
+		<parent link="hip_joint_sim_3" />
+		<child link="leg_upper_sim_3" />
+		<axis xyz="0 0 1"/>
+		<limit effort="5" velocity="20" />
+		<joint_properties friction="0.0"/>
+	</joint>
+	<joint name="Back Left Hip joint" type="revolute">
+		<origin xyz="0.075 0.125 -0.05" rpy="1.5708 -0 -2.77556e-16" />
+		<parent link="trunk" />
+		<child link="hip_joint_sim_3" />
+		<axis xyz="0 0 1"/>
+		<limit effort="5" velocity="20" lower="-1.5708" upper="1.5708"/>
+		<joint_properties friction="0.0"/>
+	</joint>
+	<link name="hip_joint_sim_4">
+		<visual>
+			<origin xyz="0.0322156 -0.0285551 -0.025" rpy="-1.5708 -0 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/hip_joint_sim.stl"/>
+			</geometry>
+			<material name="hip_joint_sim_material">
+				<color rgba="0.866667 0.321569 0.156863 1.0"/>
+			</material>
+		</visual>
+		<collision>
+			<origin xyz="0.0322156 -0.0285551 -0.025" rpy="-1.5708 -0 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/hip_joint_sim.stl"/>
+			</geometry>
+			<material name="hip_joint_sim_material">
+				<color rgba="0.866667 0.321569 0.156863 1.0"/>
+			</material>
+		</collision>
+		<inertial>
+			<origin xyz="0.0215256 0 -0.0125" rpy="0 0 0"/>
+			<mass value="0.0526902" />
+			<inertia ixx="6.52176e-05" ixy="0"  ixz="-3.17118e-37" iyy="2.26097e-04" iyz="0" izz="2.36429e-04" />
+		</inertial>
+	</link>
+	<link name="leg_upper_sim_4">
+		<visual>
+			<origin xyz="0 0 -0.045" rpy="-1.5708 -1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/leg_upper_sim.stl"/>
+			</geometry>
+			<material name="leg_upper_sim_material">
+				<color rgba="0.909804 0.572549 0.164706 1.0"/>
+			</material>
+		</visual>
+		<collision>
+			<origin xyz="0 0 -0.045" rpy="-1.5708 -1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/leg_upper_sim.stl"/>
+			</geometry>
+			<material name="leg_upper_sim_material">
+				<color rgba="0.909804 0.572549 0.164706 1.0"/>
+			</material>
+		</collision>
+		<inertial>
+			<origin xyz="2.70442e-18 -0.05 -0.0225" rpy="0 0 0"/>
+			<mass value="0.175483" />
+			<inertia ixx="4.21465e-04" ixy="7.10223e-36"  ixz="-4.19157e-36" iyy="0.00237726" iyz="2.73409e-20" izz="0.00254805" />
+		</inertial>
+	</link>
+	<link name="leg_lower_sim_4">
+		<visual>
+			<origin xyz="-1.38778e-17 0 -0.025" rpy="-1.5708 -1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/leg_lower_sim.stl"/>
+			</geometry>
+			<material name="leg_lower_sim_material">
+				<color rgba="1 0.756863 0.054902 1.0"/>
+			</material>
+		</visual>
+		<collision>
+			<origin xyz="-1.38778e-17 0 -0.025" rpy="-1.5708 -1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/leg_lower_sim.stl"/>
+			</geometry>
+			<material name="leg_lower_sim_material">
+				<color rgba="1 0.756863 0.054902 1.0"/>
+			</material>
+		</collision>
+		<inertial>
+			<origin xyz="-2.09197e-18 -0.0611369 -0.0125" rpy="0 0 0"/>
+			<mass value="0.121368" />
+			<inertia ixx="1.95228e-04" ixy="-4.63998e-36"  ixz="-2.41566e-36" iyy="0.00202862" iyz="-2.25222e-20" izz="0.00195982" />
+		</inertial>
+	</link>
+	<link name="wheel_sim_4">
+		<visual>
+			<origin xyz="-0.0870872 -0.0270469 -0.015" rpy="-1.5708 -1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/wheel_sim.stl"/>
+			</geometry>
+			<material name="wheel_sim_material">
+				<color rgba="0.647059 0.647059 0.647059 1.0"/>
+			</material>
+		</visual>
+		<collision>
+			<origin xyz="-0.0870872 -0.0270469 -0.015" rpy="-1.5708 -1.5708 0" />
+			<geometry>
+				<mesh filename="../meshes/V2.5/wheel_sim.stl"/>
+			</geometry>
+			<material name="wheel_sim_material">
+				<color rgba="0.647059 0.647059 0.647059 1.0"/>
+			</material>
+		</collision>
+		<inertial>
+			<origin xyz="-2.77556e-17 3.46945e-18 -0.0075" rpy="0 0 0"/>
+			<mass value="0.120469" />
+			<inertia ixx="7.54929e-04" ixy="-9.81396e-53"  ixz="0" iyy="0.00146626" iyz="0" izz="7.54929e-04" />
+		</inertial>
+	</link>
+	<joint name="Back Right Wheel joint" type="revolute">
+		<origin xyz="-2.77556e-17 -0.1 -0.025" rpy="-6.58326e-17 6.82995e-17 -0.785398" />
+		<parent link="leg_lower_sim_4" />
+		<child link="wheel_sim_4" />
+		<axis xyz="0 0 1"/>
+		<limit effort="5" velocity="20" />
+		<joint_properties friction="0.0"/>
+	</joint>
+	<joint name="Back Right Knee joint" type="revolute">
+		<origin xyz="0 -0.1 -0.045" rpy="4.8688e-17 1.29052e-17 1.39626" />
+		<parent link="leg_upper_sim_4" />
+		<child link="leg_lower_sim_4" />
+		<axis xyz="0 0 1"/>
+		<limit effort="5" velocity="20" />
+		<joint_properties friction="0.0"/>
+	</joint>
+	<joint name="Back Right Hip Lower joint" type="revolute">
+		<origin xyz="0.055 2.08167e-17 -0.0125" rpy="-1.5708 0.959931 1.5708" />
+		<parent link="hip_joint_sim_4" />
+		<child link="leg_upper_sim_4" />
+		<axis xyz="0 0 1"/>
+		<limit effort="5" velocity="20" />
+		<joint_properties friction="0.0"/>
+	</joint>
+	<joint name="Back Right Hip joint" type="revolute">
+		<origin xyz="-0.075 0.125 -0.05" rpy="-1.5708 -0 3.14159" />
+		<parent link="trunk" />
+		<child link="hip_joint_sim_4" />
+		<axis xyz="0 0 1"/>
+		<limit effort="5" velocity="20" />
+		<joint_properties friction="0.0"/>
+	</joint>
+</robot>

@@ -1,0 +1,13 @@
+{
+    "configuration": "default",
+    "documentId": "f028ddc671835c94395844f1",
+    "documentMicroversion": "eed10897ded47ebcfa7769e4",
+    "elementId": "8e43d62af845a19f07f99bfc",
+    "fullConfiguration": "default",
+    "id": "MLocN+KoRdB13xoJP",
+    "isStandardContent": false,
+    "name": "Hip Joint Sim <5>",
+    "partId": "JHD",
+    "suppressed": false,
+    "type": "Part"
+}
