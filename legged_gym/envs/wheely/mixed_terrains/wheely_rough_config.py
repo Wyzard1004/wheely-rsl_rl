@@ -48,47 +48,47 @@ class WheelyRoughCfg( LeggedRobotCfg ):
         pos = [0.0, 0.0, 0.25] # x,y,z [m]
         rot = [0, 0, 0, 1]
         default_joint_angles = { # = target angles [rad] when action = 0.0
-            "FLHU joint": 0.0,
-            "BLHU joint": 0.0,
-            "FRHU joint": 0.0,
-            "BRHU joint": 0.0,
+            "FLHU": 0.0,
+            "BLHU": 0.0,
+            "FRHU": 0.0,
+            "BRHU": 0.0,
 
-            "FLHL joint": 0,
-            "BLHL joint": 0,
-            "FRHL joint": 0,
-            "BRHL joint": 0,
+            "FLHL": 0,
+            "BLHL": 0,
+            "FRHL": 0,
+            "BRHL": 0,
 
-            "FLK joint": 0,
-            "BLK joint": 0,
-            "FRK joint": 0,
-            "BRK joint": 0,
+            "FLK": 0,
+            "BLK": 0,
+            "FRK": 0,
+            "BRK": 0,
 
-            # "FLHU joint": np.deg2rad(45),
-            # "BLHU joint": np.deg2rad(45),
-            # "FRHU joint": -np.deg2rad(45),
-            # "BRHU joint": -np.deg2rad(45),
+            # "FLHU": np.deg2rad(45),
+            # "BLHU": np.deg2rad(45),
+            # "FRHU": -np.deg2rad(45),
+            # "BRHU": -np.deg2rad(45),
 
-            "FLHL joint": np.deg2rad(45),
-            "BLHL joint": np.deg2rad(45),
-            "FRHL joint": -np.deg2rad(45),
-            "BRHL joint": -np.deg2rad(45),
+            "FLHL": np.deg2rad(45),
+            "BLHL": np.deg2rad(45),
+            "FRHL": -np.deg2rad(45),
+            "BRHL": -np.deg2rad(45),
 
-            "FLK joint": -np.deg2rad(90),
-            "BLK joint": -np.deg2rad(90),
-            "FRK joint": np.deg2rad(90),
-            "BRK joint": np.deg2rad(90),
+            "FLK": -np.deg2rad(90),
+            "BLK": -np.deg2rad(90),
+            "FRK": np.deg2rad(90),
+            "BRK": np.deg2rad(90),
 
-            "FLW joint": 0,
-            "BLW joint": 0,
-            "FRW joint": 0,
-            "BRW joint": 0
+            "FLW": 0,
+            "BLW": 0,
+            "FRW": 0,
+            "BRW": 0
         }
 
     class control( LeggedRobotCfg.control ):
         control_type = 'P'
         # PD Drive parameters:
-        stiffness = {'joint': 20}  # [N*m/rad]
-        damping = {'joint': 0.5}     # [N*m*s/rad]
+        stiffness = {'HU': 20, 'HL': 20, 'K': 20, 'W': 20}  # [N*m/rad]
+        damping = {'HU': 0.5, 'HL': 0.5, 'K': 0.5, 'W': 0.5}     # [N*m*s/rad]
         # action scale: target angle = actionScale * action + defaultAngle
         action_scale = 0.25
         # decimation: Number of control action updates @ sim DT per policy DT
@@ -96,7 +96,7 @@ class WheelyRoughCfg( LeggedRobotCfg ):
         use_actuator_network = False
 
     class asset( LeggedRobotCfg.asset ):
-        file = "{LEGGED_GYM_ROOT_DIR}/resources/robots/wheely/URDFs/V2-7.urdf"
+        file = "{LEGGED_GYM_ROOT_DIR}/resources/robots/wheely/URDFs/V2-8.urdf"
         name = "Wheely"
         disable_gravity = False
         self_collisions = 1 # 1 to disable, 0 to enable...bitwise filter

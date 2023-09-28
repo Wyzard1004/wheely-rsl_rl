@@ -46,68 +46,70 @@ class WheelyFlatCfg( WheelyRoughCfg ):
         base_height_target = 0.25
         only_positive_rewards = False
         tracking_sigma = 0.25 # tracking reward = exp(-error^2/sigma)
-        soft_dof_pos_limit = 0.90 # percentage of urdf limits, values above this limit are penalized
+        soft_dof_pos_limit = 1. # percentage of urdf limits, values above this limit are penalized
         soft_dof_vel_limit = 1.
         soft_torque_limit = 1.
-        max_contact_force = 25 # forces above this value are penalized
+        max_contact_force = 35 # forces above this value are penalized
         class scales( WheelyRoughCfg.rewards.scales ):
-            termination = -3
-            tracking_lin_vel = 2.5#-0.25
-            tracking_ang_vel = 1.25#-0.25
-            lin_vel_z = -0.5#-0.25
-            ang_vel_xy = -0.05#-0.25
-            orientation = -1
-            torques = 0#-0.00001
-            dof_vel = 0#-0.00001
-            dof_acc = 0#-0.00001
-            base_height = -2.5
-            feet_air_time = 0.75 #0.0
-            collision = -1
+            termination = -0.0
+            tracking_lin_vel = 1.0
+            tracking_ang_vel = 0.5
+            lin_vel_z = -2.0
+            ang_vel_xy = -0.05
+            orientation = -0.
+            torques = -0.00001
+            dof_vel = -0.
+            dof_acc = -2.5e-7
+            base_height = -0. 
+            feet_air_time =  1.0
+            collision = -1.
+            feet_stumble = -0.0 
+            action_rate = -0.01
+            stand_still = -0.
+            base_height = -0.01
+            
             base_collision = 0
             feet_collision = 0 #.1
-            feet_stumble = -0#-0.0 
-            action_rate = 0#-0.01
-            stand_still = 0#-0.
-            episode_length=0.001 #logarithmically increasing reward
+            episode_length=0.0001 #logarithmically increasing reward
             # terrain=1 
     class init_state( WheelyRoughCfg.init_state ):
-        pos = [0.0, 0.0, 0.2] # x,y,z [m]
+        pos = [0.0, 0.0, 0.3] # x,y,z [m]
         rot = [0, 0, 0, 1]
         default_joint_angles = { # = target angles [rad] when action = 0.0
-            "FLHU joint": 0.0,
-            "BLHU joint": 0.0,
-            "FRHU joint": 0.0,
-            "BRHU joint": 0.0,
+            "FLHU": 0.0,
+            "BLHU": 0.0,
+            "FRHU": 0.0,
+            "BRHU": 0.0,
 
-            "FLHL joint": 0,
-            "BLHL joint": 0,
-            "FRHL joint": 0,
-            "BRHL joint": 0,
+            "FLHL": 0,
+            "BLHL": 0,
+            "FRHL": 0,
+            "BRHL": 0,
 
-            # "FLK joint": 0,
-            # "BLK joint": 0,
-            # "FRK joint": 0,
-            # "BRK joint": 0,
+            "FLK": 0,
+            "BLK": 0,
+            "FRK": 0,
+            "BRK": 0,
 
-            # "FLHU joint": np.deg2rad(45),
-            # "BLHU joint": np.deg2rad(45),
-            # "FRHU joint": -np.deg2rad(45),
-            # "BRHU joint": -np.deg2rad(45),
+            # "FLHU": np.deg2rad(45),
+            # "BLHU": np.deg2rad(45),
+            # "FRHU": -np.deg2rad(45),
+            # "BRHU": -np.deg2rad(45),
 
-            # "FLHL joint": np.deg2rad(15),
-            # "BLHL joint": np.deg2rad(15),
-            # "FRHL joint": -np.deg2rad(15),
-            # "BRHL joint": -np.deg2rad(15),
+            # "FLHL": np.deg2rad(45),
+            # "BLHL": np.deg2rad(45),
+            # "FRHL": -np.deg2rad(45),
+            # "BRHL": -np.deg2rad(45),
 
-            "FLK joint": -np.deg2rad(60),
-            "BLK joint": -np.deg2rad(60),
-            "FRK joint": np.deg2rad(60),
-            "BRK joint": np.deg2rad(60),
+            # "FLK": -np.deg2rad(90),
+            # "BLK": -np.deg2rad(90),
+            # "FRK": np.deg2rad(90),
+            # "BRK": np.deg2rad(90),
 
-            "FLW joint": 0,
-            "BLW joint": 0,
-            "FRW joint": 0,
-            "BRW joint": 0
+            "FLW": 0,
+            "BLW": 0,
+            "FRW": 0,
+            "BRW": 0
         }
     class domain_rand( WheelyRoughCfg.domain_rand ):
         friction_range = [0., 1.5] # on ground planes the friction combination mode is averaging, i.e total friction = (foot_friction + 1.)/2.
