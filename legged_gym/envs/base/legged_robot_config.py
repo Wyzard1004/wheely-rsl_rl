@@ -33,18 +33,19 @@ from .base_config import BaseConfig
 class LeggedRobotCfg(BaseConfig):
     class env:
         num_envs = 4096
-        num_observations = 247
-        num_privileged_obs = None # if not None a priviledge_obs_buf will be returned by step() (critic obs for assymetric training). None is returned otherwise 
-        num_actions = 16
+        # num_observations = 247 #With Wheels
+        num_observations = 235 #Without Wheels
+        num_privileged_obs = None  # if not None a priviledge_obs_buf will be returned by step() (critic obs for assymetric training). None is returned otherwise 
+        num_actions = 12
         env_spacing = 3.  # not used with heightfields/trimeshes 
-        send_timeouts = True # send time out information to the algorithm
-        episode_length_s = 20 # episode length in seconds
+        send_timeouts = True  # send time out information to the algorithm
+        episode_length_s = 20  # episode length in seconds
 
     class terrain:
-        mesh_type = 'trimesh' # "heightfield" # none, plane, heightfield or trimesh
-        horizontal_scale = 0.1 # [m]
-        vertical_scale = 0.005 # [m]
-        border_size = 25 # [m]
+        mesh_type = 'trimesh'  # "heightfield" # none, plane, heightfield or trimesh
+        horizontal_scale = 0.1  # [m]
+        vertical_scale = 0.005  # [m]
+        border_size = 25  # [m]
         curriculum = True
         static_friction = 1.0
         dynamic_friction = 1.0
@@ -53,24 +54,24 @@ class LeggedRobotCfg(BaseConfig):
         measure_heights = True
         measured_points_x = [-0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8] # 1mx1.6m rectangle (without center line)
         measured_points_y = [-0.5, -0.4, -0.3, -0.2, -0.1, 0., 0.1, 0.2, 0.3, 0.4, 0.5]
-        selected = False # select a unique terrain type and pass all arguments
-        terrain_kwargs = None # Dict of arguments for selected terrain
+        selected = False  # select a unique terrain type and pass all arguments
+        terrain_kwargs = None  # Dict of arguments for selected terrain
         max_init_terrain_level = 1 # starting curriculum state
         terrain_length = 8.
         terrain_width = 8.
-        num_rows= 10 # number of terrain rows (levels)
-        num_cols = 20 # number of terrain cols (types)
+        num_rows = 10  # number of terrain rows (levels)
+        num_cols = 20  # number of terrain cols (types)
         # terrain types: [smooth slope, rough slope, stairs up, stairs down, discrete]
         terrain_proportions = [0.5, 0.5, 0, 0, 0]
         # trimesh only:
-        slope_treshold = 0.75 # slopes above this threshold will be corrected to vertical surfaces
+        slope_treshold = 0.75  # slopes above this threshold will be corrected to vertical surfaces
 
     class commands:
         curriculum = True
-        max_curriculum = 1.
-        num_commands = 4 # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
-        resampling_time = 10. # time before command are changed[s]
-        heading_command = True # if true: compute ang vel command from heading error
+        max_curriculum = 3.
+        num_commands = 4  # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
+        resampling_time = 50.  # time before command are changed[s]
+        heading_command = True  # if true: compute ang vel command from heading error
         class ranges:
             lin_vel_x = [-3, 3] # min max [m/s]
             lin_vel_y = [-3, 3]   # min max [m/s]
@@ -103,18 +104,17 @@ class LeggedRobotCfg(BaseConfig):
     class asset:
         file = ""
         name = "legged_robot"  # actor name
-        foot_name = "wheel" # name of the feet bodies, used to index body state and contact force tensors
-        penalize_contacts_on = ["hip", "leg"]
+        foot_name = "LL" # name of the feet bodies, used to index body state and contact force tensors
+        penalize_contacts_on = ["H", "LU"]
         penalize_base_contacts_on = []
         terminate_after_contacts_on = ["base"]
         disable_gravity = False
-        collapse_fixed_joints = True # merge bodies connected by fixed joints. Specific fixed joints can be kept by adding " <... dont_collapse="true">
-        fix_base_link = False # fixe the base of the robot
+        collapse_fixed_joints = True  # merge bodies connected by fixed joints. Specific fixed joints can be kept by adding " <... dont_collapse="true">
+        fix_base_link = True  # fixe the base of the robot
         default_dof_drive_mode = 1 # see GymDofDriveModeFlags (0 is none, 1 is pos tgt, 2 is vel tgt, 3 effort)
-        self_collisions = 0 # 1 to disable, 0 to enable...bitwise filter
-        replace_cylinder_with_capsule = True # replace collision cylinders with capsules, leads to faster/more stable simulation
-        flip_visual_attachments = False # Some .obj meshes must be flipped from y-up to z-up
-        
+        self_collisions = 0  # 1 to disable, 0 to enable...bitwise filter
+        replace_cylinder_with_capsule = True  # replace collision cylinders with capsules, leads to faster/more stable simulation
+        flip_visual_attachments = False  # Some .obj meshes must be flipped from y-up to z-up
         density = 0.001
         angular_damping = 0.
         linear_damping = 0.
@@ -154,11 +154,11 @@ class LeggedRobotCfg(BaseConfig):
 
         only_positive_rewards = False # if true negative total rewards are clipped at zero (avoids early termination problems)
         tracking_sigma = 0.25 # tracking reward = exp(-error^2/sigma)
-        soft_dof_pos_limit = 0.80 # percentage of urdf limits, values above this limit are penalized
+        soft_dof_pos_limit = 1 # percentage of urdf limits, values above this limit are penalized
         soft_dof_vel_limit = 1.
         soft_torque_limit = 1.
         base_height_target = 0.3
-        max_contact_force = 9.8 # forces above this value are penalized
+        max_contact_force = 20 # forces above this value are penalized
 
     class normalization:
         class obs_scales:

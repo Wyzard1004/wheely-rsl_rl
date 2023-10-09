@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <robot name="wheely">
-    <link name="base">
+    <!-- <link name="base">
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0" />
             <geometry>
@@ -12,8 +12,8 @@
         <origin rpy="0 0 0" xyz="0 0 0" />
         <parent link="base" />
         <child link="trunk" />
-    </joint>
-    <link name="trunk">
+    </joint> -->
+    <link name="base">
         <visual>
             <origin xyz="0.052028044034958947917 0.32788004898623768213 -0.25518667591527960381"
                 rpy="0.087266480467832654999 -1.4990033074911502359e-08 -2.2094851261557873804e-08" />
@@ -195,7 +195,7 @@
     <joint name="FRHU" type="revolute">
         <origin xyz="-0.022971959406365649592 0.19849982820089065449 -0.21631499016155675275"
             rpy="1.4835298463270636393 1.4990033393763916416e-08 3.1415926314949418341" />
-        <parent link="trunk" />
+        <parent link="base" />
         <child link="FRH" />
         <axis xyz="0 0 1" />
         <limit effort="6.864655" velocity="8.055365759832842" lower="-1.570796326794896558" upper="1.570796326794896558" />
@@ -350,7 +350,7 @@
     <joint name="FLHU" type="revolute">
         <origin xyz="0.12702804059363420608 0.19849982488666309544 -0.21631498791305175944"
             rpy="-1.4835298463270638614 6.7904519714569485168e-09 -2.0189305413825018056e-08" />
-        <parent link="trunk" />
+        <parent link="base" />
         <child link="FLH" />
         <axis xyz="0 0 1" />
         <limit effort="6.864655" velocity="8.055365759832842" lower="-1.570796326794896558" upper="1.570796326794896558" />
@@ -508,7 +508,7 @@
     <joint name="BLHU" type="revolute">
         <origin xyz="0.12702804579041498956 0.44854469371680671941 -0.19443889201555877855"
             rpy="1.6580628072627294767 1.8044978216328643843e-09 -2.0625520126565480844e-08" />
-        <parent link="trunk" />
+        <parent link="base" />
         <child link="BLH" />
         <axis xyz="0 0 1" />
         <limit effort="6.864655" velocity="8.055365759832842" lower="-1.570796326794896558" upper="1.570796326794896558" />
@@ -664,7 +664,7 @@
     <joint name="BRHU" type="revolute">
         <origin xyz="-0.022971954209584755091 0.44854469703103438949 -0.1944388942640637441"
             rpy="-1.6580628072627294767 -1.8044955021529479955e-09 3.1415926329642727133" />
-        <parent link="trunk" />
+        <parent link="base" />
         <child link="BRH" />
         <axis xyz="0 0 1" />
         <limit effort="6.864655" velocity="8.055365759832842" lower="-1.570796326794896558" upper="1.570796326794896558" />

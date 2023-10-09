@@ -37,7 +37,7 @@ class WheelyRoughCfg( LeggedRobotCfg ):
 
     class env( LeggedRobotCfg.env ):
         num_envs = 4096
-        num_actions = 16
+        num_actions = 12
         max_iterations=500
 
 
@@ -45,7 +45,7 @@ class WheelyRoughCfg( LeggedRobotCfg ):
         mesh_type = 'trimesh'
 
     class init_state( LeggedRobotCfg.init_state ):
-        pos = [0.0, 0.0, 0.25] # x,y,z [m]
+        pos = [0.0, 0.0, 0.3] # x,y,z [m]
         rot = [0, 0, 0, 1]
         default_joint_angles = { # = target angles [rad] when action = 0.0
             "FLHU": 0.0,
@@ -78,25 +78,25 @@ class WheelyRoughCfg( LeggedRobotCfg ):
             "FRK": np.deg2rad(90),
             "BRK": np.deg2rad(90),
 
-            "FLW": 0,
-            "BLW": 0,
-            "FRW": 0,
-            "BRW": 0
+            # "FLW": 0,
+            # "BLW": 0,
+            # "FRW": 0,
+            # "BRW": 0
         }
 
-    class control( LeggedRobotCfg.control ):
+    class control(LeggedRobotCfg.control):
         control_type = 'P'
         # PD Drive parameters:
-        stiffness = {'HU': 20, 'HL': 20, 'K': 20, 'W': 20}  # [N*m/rad]
-        damping = {'HU': 0.5, 'HL': 0.5, 'K': 0.5, 'W': 0.5}     # [N*m*s/rad]
+        stiffness = {'': 20}  # [N*m/rad]
+        damping = {'': 0.5}     # [N*m*s/rad]
         # action scale: target angle = actionScale * action + defaultAngle
         action_scale = 0.25
         # decimation: Number of control action updates @ sim DT per policy DT
         decimation = 4
         use_actuator_network = False
 
-    class asset( LeggedRobotCfg.asset ):
-        file = "{LEGGED_GYM_ROOT_DIR}/resources/robots/wheely/URDFs/V2-8.urdf"
+    class asset(LeggedRobotCfg.asset):
+        file = "{LEGGED_GYM_ROOT_DIR}/resources/robots/wheely/URDFs/NW-V2-0.urdf"
         name = "Wheely"
         disable_gravity = False
         self_collisions = 1 # 1 to disable, 0 to enable...bitwise filter
