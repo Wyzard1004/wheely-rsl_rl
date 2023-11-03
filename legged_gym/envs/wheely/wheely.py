@@ -68,27 +68,34 @@ class Wheely(LeggedRobot):
 
     def _compute_torques(self, actions):
         # Wheeled Torques
-        # actions_scaled = actions * self.cfg.control.action_scale
+        actions_scaled = actions * self.cfg.control.action_scale
+        
+        # pdb.set_trace()
+        pindex = [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14]
+        vindex = [3, 7, 11, 15]
+        torques = torch.zeros(self.num_envs, self.num_actions, dtype=torch.float, device=self.device, requires_grad=False)
+        for i in pindex:       
+            torques[:, i] = self.p_gains[i]*(actions_scaled[:, i] + self.default_dof_pos[:, i] - self.dof_pos[:, i]) - self.d_gains[i]*self.dof_vel[:, i]
+        
+        for i in vindex:
+            torques[:, i] = self.p_gains[i]*(actions_scaled[:, i] - self.dof_vel[:, i]) - self.d_gains[i]*(self.dof_vel[:, i] - self.last_dof_vel[:, i])/self.sim_params.dt
         # # pdb.set_trace()
-        # pindex = [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14]
-        # vindex = [3, 7, 11, 15]
-        # torques = torch.zeros(self.num_envs, self.num_actions, dtype=torch.float, device=self.device, requires_grad=False)
-        # for i in pindex:
-        #     torques[:, i] = self.p_gains[i]*(actions_scaled[:, i] + self.default_dof_pos[:, i] - self.dof_pos[:, i]) - self.d_gains[i]*self.dof_vel[:, i]
-        # for i in vindex:
-        #     torques[:, i] = self.p_gains[i]*(actions_scaled[:, i] - self.dof_vel[:, i]) - self.d_gains[i]*(self.dof_vel[:, i] - self.last_dof_vel[:, i])/self.sim_params.dt
-
-        # return torch.clip(torques, -self.torque_limits, self.torque_limits)
+        # print("Actions: ")
+        # print(actions_scaled[0])
+        # print("Torques: ")
+        # # print(torques[0])
+        # print(torch.clip(torques, -self.torque_limits, self.torque_limits))
+        return torch.clip(torques, -self.torque_limits, self.torque_limits)
 
         #Legged Torques
-        actions_scaled = actions * self.cfg.control.action_scale
-        control_type = self.cfg.control.control_type
-        if control_type=="P":
-            torques = self.p_gains*(actions_scaled + self.default_dof_pos - self.dof_pos) - self.d_gains*self.dof_vel
-        elif control_type=="V":
-            torques = self.p_gains*(actions_scaled - self.dof_vel) - self.d_gains*(self.dof_vel - self.last_dof_vel)/self.sim_params.dt
-        elif control_type=="T":
-            torques = actions_scaled
-        else:
-            raise NameError(f"Unknown controller type: {control_type}")
-        return torch.clip(torques, -self.torque_limits, self.torque_limits)
+        # actions_scaled = actions * self.cfg.control.action_scale
+        # control_type = self.cfg.control.control_type
+        # if control_type=="P":
+        #     torques = self.p_gains*(actions_scaled + self.default_dof_pos - self.dof_pos) - self.d_gains*self.dof_vel
+        # elif control_type=="V":
+        #     torques = self.p_gains*(actions_scaled - self.dof_vel) - self.d_gains*(self.dof_vel - self.last_dof_vel)/self.sim_params.dt
+        # elif control_type=="T":
+        #     torques = actions_scaled
+        # else:
+        #     raise NameError(f"Unknown controller type: {control_type}")
+        # return torch.clip(torques, -self.torque_limits, self.torque_limits)

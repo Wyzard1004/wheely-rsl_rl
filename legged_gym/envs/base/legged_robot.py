@@ -207,10 +207,6 @@ class LeggedRobot(BaseTask):
             rew = self._reward_termination() * self.reward_scales["termination"]
             self.rew_buf += rew
             self.episode_sums["termination"] += rew
-        if "terrain" in self.reward_scales: 
-            rew = self._reward_terrain() * self.reward_scales["terrain"]
-            self.rew_buf += rew
-            self.episode_sums["terrain"] += rew
     
     def compute_observations(self):
         """ Computes observations
@@ -224,13 +220,12 @@ class LeggedRobot(BaseTask):
                                     self.actions
                                     ),dim=-1)
         # add perceptive inputs if not blind
-        if self.cfg.terrain.measure_heights:
-            heights = torch.clip(self.root_states[:, 2].unsqueeze(1) - 0.5 - self.measured_heights, -1, 1.) * self.obs_scales.height_measurements
-            # disable no flat terrain
-            # self.obs_buf = torch.cat((self.obs_buf, heights), dim=-1)
+        # if self.cfg.terrain.measure_heights:
+        #     heights = torch.clip(self.root_states[:, 2].unsqueeze(1) - 0.5 - self.measured_heights, -1, 1.) * self.obs_scales.height_measurements
+        #     self.obs_buf = torch.cat((self.obs_buf, heights), dim=-1)
         # add noise if needed
-        if self.add_noise:
-            self.obs_buf += (2 * torch.rand_like(self.obs_buf) - 1) * self.noise_scale_vec
+        # if self.add_noise:
+        #     self.obs_buf += (2 * torch.rand_like(self.obs_buf) - 1) * self.noise_scale_vec
 
     def create_sim(self):
         """ Creates simulation, terrain and evironments
@@ -356,19 +351,55 @@ class LeggedRobot(BaseTask):
 
         # set small commands to zero
         self.commands[env_ids, :2] *= (torch.norm(self.commands[env_ids, :2], dim=1) > 0.2).unsqueeze(1)
-    def _compute_torques(self, actions):
-            actions_scaled = actions * self.cfg.control.action_scale
-            
-            # pdb.set_trace()
-            pindex = [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14]
-            vindex = [3, 7, 11, 15]
-            torques = torch.zeros(self.num_envs, self.num_actions, dtype=torch.float, device=self.device, requires_grad=False)
-            for i in pindex:
-                torques[:, i] = self.p_gains[i]*(actions_scaled[:, i] + self.default_dof_pos[:, i] - self.dof_pos[:, i]) - self.d_gains[i]*self.dof_vel[:, i]
-            for i in vindex:
-                torques[:, i] = self.p_gains[i]*(actions_scaled[:, i] - self.dof_vel[:, i]) - self.d_gains[i]*(self.dof_vel[:, i] - self.last_dof_vel[:, i])/self.sim_params.dt
 
+    def _compute_torques(self, actions):
+        """ Compute torques from actions.
+            Actions can be interpreted as position or velocity targets given to a PD controller, or directly as scaled torques.
+            [NOTE]: torques must have the same dimension as the number of DOFs, even if some DOFs are not actuated.
+
+        Args:
+            actions (torch.Tensor): Actions
+
+        Returns:
+            [torch.Tensor]: Torques sent to the simulation
+        """
+        #pd controller
+        actions_scaled = actions * self.cfg.control.action_scale
+        control_type = self.cfg.control.control_type
+        if control_type=="P":
+            torques = self.p_gains*(actions_scaled + self.default_dof_pos - self.dof_pos) - self.d_gains*self.dof_vel
+        elif control_type=="V":
+            torques = self.p_gains*(actions_scaled - self.dof_vel) - self.d_gains*(self.dof_vel - self.last_dof_vel)/self.sim_params.dt
+        elif control_type=="T":
+            torques = actions_scaled
+        else:
+            raise NameError(f"Unknown controller type: {control_type}")
             return torch.clip(torques, -self.torque_limits, self.torque_limits)
+            return torch.clip(torques, -self.torque_limits, self.torque_limits)
+    # def _compute_torques(self, actions):
+    #     """ Compute torques from actions.
+    #         Actions can be interpreted as position or velocity targets given to a PD controller, or directly as scaled torques.
+    #         [NOTE]: torques must have the same dimension as the number of DOFs, even if some DOFs are not actuated.
+
+    #     Args:
+    #         actions (torch.Tensor): Actions
+
+    #     Returns:
+    #         [torch.Tensor]: Torques sent to the simulation
+    #     """
+    #     #pd controller
+    #     actions_scaled = actions * self.cfg.control.action_scale
+    #     control_type = self.cfg.control.control_type
+    #     if control_type=="P":
+    #         torques = self.p_gains*(actions_scaled + self.default_dof_pos - self.dof_pos) - self.d_gains*self.dof_vel
+    #     elif control_type=="V":
+    #         torques = self.p_gains*(actions_scaled - self.dof_vel) - self.d_gains*(self.dof_vel - self.last_dof_vel)/self.sim_params.dt
+    #     elif control_type=="T":
+    #         torques = actions_scaled
+    #     else:
+    #         raise NameError(f"Unknown controller type: {control_type}")
+    #     return torch.clip(torques, -self.torque_limits, self.torque_limits)
+        return torch.clip(torques, -self.torque_limits, self.torque_limits)
     # def _compute_torques(self, actions):
     #     """ Compute torques from actions.
     #         Actions can be interpreted as position or velocity targets given to a PD controller, or directly as scaled torques.
@@ -401,7 +432,7 @@ class LeggedRobot(BaseTask):
         Args:
             env_ids (List[int]): Environemnt ids
         """
-        self.dof_pos[env_ids] = self.default_dof_pos * torch_rand_float(0.75, 0.99, (len(env_ids), self.num_dof), device=self.device)
+        self.dof_pos[env_ids] = self.default_dof_pos * torch_rand_float(0.5, 1.5, (len(env_ids), self.num_dof), device=self.device)
         self.dof_vel[env_ids] = 0.
 
         env_ids_int32 = env_ids.to(dtype=torch.int32)
@@ -424,7 +455,7 @@ class LeggedRobot(BaseTask):
             self.root_states[env_ids] = self.base_init_state
             self.root_states[env_ids, :3] += self.env_origins[env_ids]
         # base velocities
-        self.root_states[env_ids, 7:13] = torch_rand_float(-0.01, 0.01, (len(env_ids), 6), device=self.device) # [7:10]: lin vel, [10:13]: ang vel
+        self.root_states[env_ids, 7:13] = torch_rand_float(-0.5, 0.5, (len(env_ids), 6), device=self.device) # [7:10]: lin vel, [10:13]: ang vel
         env_ids_int32 = env_ids.to(dtype=torch.int32)
         self.gym.set_actor_root_state_tensor_indexed(self.sim,
                                                      gymtorch.unwrap_tensor(self.root_states),
@@ -497,6 +528,35 @@ class LeggedRobot(BaseTask):
         return noise_vec
 
     #----------------------------------------
+
+
+
+    def add_recording_camera(self):
+            camera_properties = gymapi.CameraProperties()
+            camera_properties.enable_tensors = True
+            camera_properties.width = 640
+            camera_properties.height = 480
+            camera_properties.horizontal_fov = 45 #np.deg2rad(45)
+            camera_properties.near_plane = 0.01
+            #print("camera_properties.near_plane = ", camera_properties.near_plane)
+            camera_properties.far_plane = 10
+            camera_properties.use_collision_geometry = True
+
+            # camera_properties.use_collision_geometry = True # True
+
+            actor_handle = self.gym.get_actor_handle(self.envs[0], 0)
+
+            body_handle = self.gym.get_actor_rigid_body_handle(self.envs[0], actor_handle, 0)
+            base_pos = (self.root_states[0, :3]).cpu().numpy()
+            self.recording_camera = self.gym.create_camera_sensor(self.envs[0], camera_properties)
+
+            local_transform = gymapi.Transform()
+            local_transform.p = gymapi.Vec3(0, -3, 3) # x,y,z position offset
+            local_transform.r = gymapi.Quat(-0.2793516, 0.2713104, 0.6607287, 0.6417094  ) # rotation offset
+            self.gym.attach_camera_to_body( self.recording_camera, self.envs[0], body_handle, local_transform, gymapi.FOLLOW_TRANSFORM)
+
+
+
     def _init_buffers(self):
         """ Initialize torch tensors which will contain simulation states and processed quantities
         """
@@ -702,8 +762,9 @@ class LeggedRobot(BaseTask):
             # create env instance
             env_handle = self.gym.create_env(self.sim, env_lower, env_upper, int(np.sqrt(self.num_envs)))
             pos = self.env_origins[i].clone()
-            # pos[:2] += torch_rand_float(-1., 1., (2,1), device=self.device).squeeze(1)
+            pos[:2] += torch_rand_float(-1., 1., (2,1), device=self.device).squeeze(1)
             start_pose.p = gymapi.Vec3(*pos)
+                
             rigid_shape_props = self._process_rigid_shape_props(rigid_shape_props_asset, i)
             self.gym.set_asset_rigid_shape_properties(robot_asset, rigid_shape_props)
             actor_handle = self.gym.create_actor(env_handle, robot_asset, start_pose, self.cfg.asset.name, i, self.cfg.asset.self_collisions, 0)
@@ -856,7 +917,7 @@ class LeggedRobot(BaseTask):
     
     def _reward_orientation(self):
         # Penalize non flat base orientation
-        return torch.square(torch.sum(torch.square(self.projected_gravity[:, :2]), dim=1))
+        return torch.sum(torch.square(self.projected_gravity[:, :2]), dim=1)
 
     def _reward_base_height(self):
         # Penalize base height away from target
@@ -883,8 +944,7 @@ class LeggedRobot(BaseTask):
 
     def _reward_action_rate(self):
         # Penalize changes in actions
-        return torch.sum(torch.square(self.actions_t_minus_1 - self.actions), dim=1)
-
+        return torch.sum(torch.square(self.last_actions - self.actions), dim=1)
     
     def _reward_collision(self):
         # Penalize collisions on selected bodies
@@ -892,7 +952,10 @@ class LeggedRobot(BaseTask):
     
     def _reward_base_collision(self):
         # Penalize collisions on selected bodies
-        return torch.sum(1.*(torch.norm(self.contact_forces[:, self.penalised_base_contact_indices, :], dim=-1) > 0.1), dim=1)
+        if (torch.sum(1.*(torch.norm(self.contact_forces[:, self.penalised_base_contact_indices, :], dim=-1) > 0.1), dim=1) > 0):
+            return -25
+        else:
+            return 0
     
     def _reward_feet_collision(self):
         # reward collisions on feet
@@ -927,6 +990,12 @@ class LeggedRobot(BaseTask):
         ang_vel_error = torch.square(self.commands[:, 2] - self.base_ang_vel[:, 2])
         return torch.exp(-ang_vel_error/self.cfg.rewards.tracking_sigma)
     
+    
+    # def _reward_flying(self):
+    #     # Penalize Flying Behavior
+    #     if self.base_init_state
+
+
     # def _reward_flying(self):
     #     # Penalize Flying Behavior
     #     if self.base_init_state
@@ -934,7 +1003,7 @@ class LeggedRobot(BaseTask):
     def _reward_feet_air_time(self):
         # Reward long steps
         # Need to filter the contacts because the contact reporting of PhysX is unreliable on meshes
-        contact = self.contact_forces[:, self.feet_indices, 2] > 1
+        contact = self.contact_forces[:, self.feet_indices, 2] > 1.
         contact_filt = torch.logical_or(contact, self.last_contacts) 
         self.last_contacts = contact
         first_contact = (self.feet_air_time > 0.) * contact_filt
@@ -959,6 +1028,3 @@ class LeggedRobot(BaseTask):
     def _reward_feet_contact_forces(self):
         # penalize high contact forces
         return torch.sum((torch.norm(self.contact_forces[:, self.feet_indices, :], dim=-1) -  self.cfg.rewards.max_contact_force).clip(min=0.), dim=1)
-    # def _reward_terrain(self):
-    #     #reward/penalize terrain difficulty
-    #     return self.terrain_levels

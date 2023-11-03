@@ -519,7 +519,7 @@
         <origin rpy="2.61799387799 0 0.0" xyz="0.2999 0.104 0.0"/>
     </joint>
     <!-- Drive link -->
-    <link name="">
+    <link name="LF_HAA">
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0"/>
             <geometry>
