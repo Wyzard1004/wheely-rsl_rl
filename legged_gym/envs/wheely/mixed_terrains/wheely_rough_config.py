@@ -132,7 +132,7 @@ class WheelyRoughCfg( LeggedRobotCfg ):
             tracking_ang_vel = 0.001
             lin_vel_z = -1
             ang_vel_xy = -0.00
-            orientation = -1.5
+            orientation = -0.25
             torques = -0.00001
             dof_vel = -0.
             # dof_acc = -2.5e-7
