@@ -34,6 +34,8 @@ from warnings import WarningMessage
 import numpy as np
 import os
 
+import pdb
+
 from isaacgym.torch_utils import *
 from isaacgym import gymtorch, gymapi, gymutil
 
@@ -141,6 +143,22 @@ class LeggedRobot(BaseTask):
         """ Check if environments need to be reset
         """
         self.reset_buf = torch.any(torch.norm(self.contact_forces[:, self.termination_contact_indices, :], dim=-1) > 1., dim=1)
+        # # print("Original Reset Buf: ")
+        # # print(self.reset_buf)
+        # for i,j in enumerate(self.episode_length_buf):
+        #     if j > 100:
+        #         # pdb.set_trace()
+        #         # print(torch.sum(torch.norm(self.contact_forces[i, self.feet_indices, :], dim=-1)).item())
+        #         if torch.sum(torch.norm(self.contact_forces[i, self.feet_indices, :], dim=-1)).item() < 1: 
+        #             self.reset_buf_counter[i] = self.reset_buf_counter[i]+1
+        #             if (self.reset_buf_counter[i] >= 50):
+        #                 self.reset_buf[i] = True
+        #                 self.reset_buf_counter[i] = 0
+        #         else:
+        #             self.reset_buf_counter[i] = 0
+
+                
+        
         self.time_out_buf = self.episode_length_buf > self.max_episode_length # no terminal reward for time-outs
         self.reset_buf |= self.time_out_buf
 
@@ -450,7 +468,7 @@ class LeggedRobot(BaseTask):
         if self.custom_origins:
             self.root_states[env_ids] = self.base_init_state
             self.root_states[env_ids, :3] += self.env_origins[env_ids]
-            self.root_states[env_ids, :2] += torch_rand_float(-1., 1., (len(env_ids), 2), device=self.device) # xy position within 1m of the center
+            self.root_states[env_ids, :2] += torch_rand_float(-0.75, 0.75, (len(env_ids), 2), device=self.device) # xy position within 1m of the center
         else:
             self.root_states[env_ids] = self.base_init_state
             self.root_states[env_ids, :3] += self.env_origins[env_ids]
