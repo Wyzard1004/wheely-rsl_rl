@@ -32,7 +32,7 @@ from .base_config import BaseConfig
 
 class LeggedRobotCfg(BaseConfig):
     class env:
-        num_envs = 4096
+        num_envs = 2048
         # num_observations = 235
         num_observations = 247
         num_privileged_obs = None # if not None a priviledge_obs_buf will be returned by step() (critic obs for assymetric training). None is returned otherwise 
@@ -57,8 +57,8 @@ class LeggedRobotCfg(BaseConfig):
         selected = False # select a unique terrain type and pass all arguments
         terrain_kwargs = None # Dict of arguments for selected terrain
         max_init_terrain_level = 5 # starting curriculum state
-        terrain_length = 6.
-        terrain_width = 6.
+        terrain_length = 10.
+        terrain_width = 10.
         num_rows= 10 # number of terrain rows (levels)
         num_cols = 20 # number of terrain cols (types)
         # terrain types: [smooth slope, rough slope, stairs up, stairs down, discrete]
@@ -73,21 +73,25 @@ class LeggedRobotCfg(BaseConfig):
         resampling_time = 10. # time before command are changed[s]
         heading_command = True # if true: compute ang vel command from heading error
         class ranges:
-            lin_vel_x = [-1.0, 1.0] # min max [m/s]
-            lin_vel_y = [-1.0, 1.0]   # min max [m/s]
-            ang_vel_yaw = [-1, 1]    # min max [rad/s]
-            heading = [-3.14, 3.14]
+            lin_vel_x = [0, 0] # min max [m/s]
+            lin_vel_y = [-2.5, -0.5]   # min max [m/s]
+            ang_vel_yaw = [-0.25, 0.25]    # min max [rad/s]
+            heading = [-0, 0]
             # lin_vel_x = [-0.0, 0.0] # min max [m/s]
             # lin_vel_y = [-1, 1]   # min max [m/s]
             # ang_vel_yaw = [0, 0]    # min max [rad/s]
             # heading = [0, 0]
+            # lin_vel_x = [-1.0, 1.0] # min max [m/s]
+            # lin_vel_y = [-1.0, 1.0]   # min max [m/s]
+            # ang_vel_yaw = [-1, 1]    # min max [rad/s]
+            # heading = [-3.14, 3.14]
 
     class init_state:
         pos = [0.0, 0.0, 1.] # x,y,z [m]
         rot = [0.0, 0.0, 0.0, 1.0] # x,y,z,w [quat]
         lin_vel = [0.0, 0.0, 0.0]  # x,y,z [m/s]
         ang_vel = [0.0, 0.0, 0.0]  # x,y,z [rad/s]
-        default_joint_angles = { # target angles when action = 0.0
+        default_joint_angles = { # target angles when z = 0.0
             "joint_a": 0., 
             "joint_b": 0.}
 
@@ -128,7 +132,7 @@ class LeggedRobotCfg(BaseConfig):
         randomize_friction = True
         friction_range = [0.25, 1.25]
         randomize_base_mass = True
-        added_mass_range = [-0.5, 0.5]
+        added_mass_range = [0, 1.5]
         push_robots = True
         push_interval_s = 15
         max_push_vel_xy = 1.
@@ -138,7 +142,7 @@ class LeggedRobotCfg(BaseConfig):
     class rewards:
         class scales:
             termination = -0.0
-            tracking_lin_vel = 1.0
+            tracking_lin_vel = 2.5
             tracking_ang_vel = 0.5
             lin_vel_z = -2.0
             ang_vel_xy = -0.05
@@ -185,8 +189,8 @@ class LeggedRobotCfg(BaseConfig):
     # viewer camera:
     class viewer:
         ref_env = 0
-        pos = [-1, -1, 1]  # [m]
-        lookat = [2., 2, 0]  # [m]
+        pos = [-30, 60, 60]  # [m]
+        lookat = [30., 60, 0]  # [m]
 
     class sim:
         dt =  0.005
@@ -225,7 +229,7 @@ class LeggedRobotCfgPPO(BaseConfig):
         value_loss_coef = 1.0
         use_clipped_value_loss = True
         clip_param = 0.2
-        entropy_coef = 0.01
+        entropy_coef = 0.05
         num_learning_epochs = 5
         num_mini_batches = 4 # mini batch size = num_envs*nsteps / nminibatches
         learning_rate = 1.e-3 #5.e-4
@@ -251,6 +255,6 @@ class LeggedRobotCfgPPO(BaseConfig):
         recording_duration = 200
         # load and resume
         resume = False
-        load_run = -1 # -1 = last run
+        load_run = "/home/william/legged_gym/logs/flat_wheely/Feb11_22-06-47_/model_1100.pt" # -1 = last run
         checkpoint = -1 # -1 = last saved model
-        resume_path = None # updated from load_run and chkpt
+        resume_path = "/home/william/legged_gym/logs/flat_wheely/Feb11_22-06-47_/model_1100.pt" # updated from load_run and chkpt

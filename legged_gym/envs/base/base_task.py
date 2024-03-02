@@ -33,6 +33,7 @@ from isaacgym import gymapi
 from isaacgym import gymutil
 import numpy as np
 import torch
+import pdb
 
 # Base class for RL tasks
 class BaseTask():
@@ -100,6 +101,8 @@ class BaseTask():
                 self.viewer, gymapi.KEY_V, "toggle_viewer_sync")
 
     def get_observations(self):
+        # print(self.obs_buf[0][0])
+        # pdb.set_trace()
         return self.obs_buf
     
     def get_privileged_observations(self):

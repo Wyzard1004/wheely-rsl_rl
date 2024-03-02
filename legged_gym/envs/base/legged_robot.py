@@ -100,6 +100,8 @@ class LeggedRobot(BaseTask):
         # return clipped obs, clipped states (None), rewards, dones and infos
         clip_obs = self.cfg.normalization.clip_observations
         self.obs_buf = torch.clip(self.obs_buf, -clip_obs, clip_obs)
+        # print(self.obs_buf[0])
+        # pdb.set_trace()
         if self.privileged_obs_buf is not None:
             self.privileged_obs_buf = torch.clip(self.privileged_obs_buf, -clip_obs, clip_obs)
         self.actions_t_minus_2[:]  = self.actions_t_minus_1[:]
@@ -229,6 +231,21 @@ class LeggedRobot(BaseTask):
     def compute_observations(self):
         """ Computes observations
         """
+        # print("Linear Velocity ")
+        # print(self.base_lin_vel[0])
+        # print("Angular Velocity ")
+        # print(self.base_ang_vel[0])
+        # print("Projected Gravity ")
+        # print(self.projected_gravity[0])
+        # print("Commands ")
+        # print(self.commands[0, :3])
+        # print("DOF Positions ")
+        # print(self.dof_pos[0] - self.default_dof_pos[0])
+        # print("Dof Velocity")
+        # print(self.dof_vel[0])
+        # print("Actions ")
+        # print(self.actions[0])
+        # pdb.set_trace()
         self.obs_buf = torch.cat((  self.base_lin_vel * self.obs_scales.lin_vel,
                                     self.base_ang_vel  * self.obs_scales.ang_vel,
                                     self.projected_gravity,
@@ -322,6 +339,11 @@ class LeggedRobot(BaseTask):
                 r = self.dof_pos_limits[i, 1] - self.dof_pos_limits[i, 0]
                 self.dof_pos_limits[i, 0] = m - 0.5 * r * self.cfg.rewards.soft_dof_pos_limit
                 self.dof_pos_limits[i, 1] = m + 0.5 * r * self.cfg.rewards.soft_dof_pos_limit
+        
+        # print(self.torque_limits)
+        # pdb.set_trace()
+        # print(self.sim_params.dt)
+        # pdb.set_trace()
         return props
 
     def _process_rigid_body_props(self, props, env_id):
@@ -369,30 +391,18 @@ class LeggedRobot(BaseTask):
 
         # set small commands to zero
         self.commands[env_ids, :2] *= (torch.norm(self.commands[env_ids, :2], dim=1) > 0.2).unsqueeze(1)
-
     def _compute_torques(self, actions):
-        """ Compute torques from actions.
-            Actions can be interpreted as position or velocity targets given to a PD controller, or directly as scaled torques.
-            [NOTE]: torques must have the same dimension as the number of DOFs, even if some DOFs are not actuated.
-
-        Args:
-            actions (torch.Tensor): Actions
-
-        Returns:
-            [torch.Tensor]: Torques sent to the simulation
-        """
-        #pd controller
-        actions_scaled = actions * self.cfg.control.action_scale
-        control_type = self.cfg.control.control_type
-        if control_type=="P":
-            torques = self.p_gains*(actions_scaled + self.default_dof_pos - self.dof_pos) - self.d_gains*self.dof_vel
-        elif control_type=="V":
-            torques = self.p_gains*(actions_scaled - self.dof_vel) - self.d_gains*(self.dof_vel - self.last_dof_vel)/self.sim_params.dt
-        elif control_type=="T":
-            torques = actions_scaled
-        else:
-            raise NameError(f"Unknown controller type: {control_type}")
-            return torch.clip(torques, -self.torque_limits, self.torque_limits)
+            
+            actions_scaled = actions * self.cfg.control.action_scale
+            
+            pindex = [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14]
+            vindex = [3, 7, 11, 15]
+            
+            torques = torch.zeros(self.num_envs, self.num_actions, dtype=torch.float, device=self.device, requires_grad=False)
+            for i in pindex:
+                torques[:, i] = self.p_gains[i]*(actions_scaled[:, i] + self.default_dof_pos[:, i] - self.dof_pos[:, i]) - self.d_gains[i]*self.dof_vel[:, i]
+            for i in vindex:
+                torques[:, i] = self.p_gains[i]*(actions_scaled[:, i] - self.dof_vel[:, i]) - self.d_gains[i]*(self.dof_vel[:, i] - self.last_dof_vel[:, i])/self.sim_params.dt
             return torch.clip(torques, -self.torque_limits, self.torque_limits)
     # def _compute_torques(self, actions):
     #     """ Compute torques from actions.
@@ -416,8 +426,32 @@ class LeggedRobot(BaseTask):
     #         torques = actions_scaled
     #     else:
     #         raise NameError(f"Unknown controller type: {control_type}")
+    #         return torch.clip(torques, -self.torque_limits, self.torque_limits)
+    #         return torch.clip(torques, -self.torque_limits, self.torque_limits)
+    # def _compute_torques(self, actions):
+    #     """ Compute torques from actions.
+    #         Actions can be interpreted as position or velocity targets given to a PD controller, or directly as scaled torques.
+    #         [NOTE]: torques must have the same dimension as the number of DOFs, even if some DOFs are not actuated.
+
+    #     Args:
+    #         actions (torch.Tensor): Actions
+
+    #     Returns:
+    #         [torch.Tensor]: Torques sent to the simulation
+    #     """
+    #     #pd controller
+    #     actions_scaled = actions * self.cfg.control.action_scale
+    #     control_type = self.cfg.control.control_type
+    #     if control_type=="P":
+    #         torques = self.p_gains*(actions_scaled + self.default_dof_pos - self.dof_pos) - self.d_gains*self.dof_vel
+    #     elif control_type=="V":
+    #         torques = self.p_gains*(actions_scaled - self.dof_vel) - self.d_gains*(self.dof_vel - self.last_dof_vel)/self.sim_params.dt
+    #     elif control_type=="T":
+    #         torques = actions_scaled
+    #     else:
+    #         raise NameError(f"Unknown controller type: {control_type}")
     #     return torch.clip(torques, -self.torque_limits, self.torque_limits)
-        return torch.clip(torques, -self.torque_limits, self.torque_limits)
+        # return torch.clip(torques, -self.torque_limits, self.torque_limits)
     # def _compute_torques(self, actions):
     #     """ Compute torques from actions.
     #         Actions can be interpreted as position or velocity targets given to a PD controller, or directly as scaled torques.
@@ -592,6 +626,8 @@ class LeggedRobot(BaseTask):
         self.dof_pos = self.dof_state.view(self.num_envs, self.num_dof, 2)[..., 0]
         self.dof_vel = self.dof_state.view(self.num_envs, self.num_dof, 2)[..., 1]
         self.base_quat = self.root_states[:, 3:7]
+        # print(self.base_quat[0])
+        # pdb.set_trace()
 
         self.contact_forces = gymtorch.wrap_tensor(net_contact_forces).view(self.num_envs, -1, 3) # shape: num_envs, num_bodies, xyz axis
 
@@ -600,6 +636,8 @@ class LeggedRobot(BaseTask):
         self.extras = {}
         self.noise_scale_vec = self._get_noise_scale_vec(self.cfg)
         self.gravity_vec = to_torch(get_axis_params(-1., self.up_axis_idx), device=self.device).repeat((self.num_envs, 1))
+        # print(self.gravity_vec)
+        # pdb.set_trace()
         self.forward_vec = to_torch([1., 0., 0.], device=self.device).repeat((self.num_envs, 1))
         self.torques = torch.zeros(self.num_envs, self.num_actions, dtype=torch.float, device=self.device, requires_grad=False)
         self.p_gains = torch.zeros(self.num_actions, dtype=torch.float, device=self.device, requires_grad=False)
@@ -923,6 +961,39 @@ class LeggedRobot(BaseTask):
         heights = torch.min(heights, heights3)
 
         return heights.view(self.num_envs, -1) * self.terrain.cfg.vertical_scale
+    
+    
+    def sumTorques(self):
+        sum = 0
+        for t in np.array(self.torques.flatten().cpu()): 
+            sum += abs(t)
+        return sum
+
+    def recordData(self):
+        lin_speed_doc = open("/home/william/legged_gym/legged_gym/performance/lin_speed_doc.txt", "a")
+        ang_speed_doc = open("/home/william/legged_gym/legged_gym/performance/ang_speed_doc.txt", "a")
+        torque_sum_doc = open("/home/william/legged_gym/legged_gym/performance/torque_sum_doc.txt", "a")
+        # pdb.set_trace()
+
+        lin = np.array(self.base_lin_vel.flatten().cpu())
+        lin_speed_doc.write(str(lin[0]) + " " + str(lin[1]) + " " + str(lin[2]))
+        lin_speed_doc.write("\n")
+        
+        ang = np.array(self.base_ang_vel.flatten().cpu())
+        ang_speed_doc.write(str(ang[0]) + " " + str(ang[1]) + " " + str(ang[2]))
+        ang_speed_doc.write("\n")
+        
+        torque_sum_doc.write(str(self.sumTorques()))
+        torque_sum_doc.write("\n")
+
+        
+
+        # document.write(str(((float(initLocation[0][0])-float(p.getBasePositionAndOrientation(quad.id)[0][0]))**2+(float(initLocation[0][1])-float(p.getBasePositionAndOrientation(quad.id)[0][1]))**2)**0.5))
+        # document.write("\n")
+        lin_speed_doc.close()
+        ang_speed_doc.close()
+        torque_sum_doc.close()
+
 
     #------------ reward functions----------------
     def _reward_lin_vel_z(self):

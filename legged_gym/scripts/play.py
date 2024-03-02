@@ -27,7 +27,7 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Copyright (c) 2021 ETH Zurich, Nikita Rudin
-
+import pdb
 from legged_gym import LEGGED_GYM_ROOT_DIR
 import os
 
@@ -74,9 +74,21 @@ def play(args):
     camera_direction = np.array(env_cfg.viewer.lookat) - np.array(env_cfg.viewer.pos)
     img_idx = 0
 
+    #wipe data
+    lin_speed_doc = open("/home/william/legged_gym/legged_gym/performance/lin_speed_doc.txt", "w")
+    ang_speed_doc = open("/home/william/legged_gym/legged_gym/performance/ang_speed_doc.txt", "w")
+    torque_sum_doc = open("/home/william/legged_gym/legged_gym/performance/torque_sum_doc.txt", "w")
+    
+    lin_speed_doc.write("")
+    ang_speed_doc.write("")
+    torque_sum_doc.write("")
+    
     for i in range(10*int(env.max_episode_length)):
         actions = policy(obs.detach())
+        
         obs, _, rews, dones, infos = env.step(actions.detach())
+        # pdb.set_trace()
+        env.recordData()
         if RECORD_FRAMES:
             if i % 2:
                 filename = os.path.join(LEGGED_GYM_ROOT_DIR, 'logs', train_cfg.runner.experiment_name, 'exported', 'frames', f"{img_idx}.png")
