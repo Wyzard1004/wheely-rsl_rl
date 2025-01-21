@@ -28,6 +28,10 @@
 #
 # Copyright (c) 2021 ETH Zurich, Nikita Rudin
 
+import pdb
+import math
+import random
+
 import numpy as np
 from numpy.random import choice
 from scipy import interpolate
@@ -49,6 +53,7 @@ class Terrain:
 
         self.cfg.num_sub_terrains = cfg.num_rows * cfg.num_cols
         self.env_origins = np.zeros((cfg.num_rows, cfg.num_cols, 3))
+        self.env_targets = np.zeros((cfg.num_rows, cfg.num_cols, 2))
 
         self.width_per_env_pixels = int(self.env_width / cfg.horizontal_scale)
         self.length_per_env_pixels = int(self.env_length / cfg.horizontal_scale)
@@ -57,7 +62,7 @@ class Terrain:
         self.tot_cols = int(cfg.num_cols * self.width_per_env_pixels) + 2 * self.border
         self.tot_rows = int(cfg.num_rows * self.length_per_env_pixels) + 2 * self.border
 
-        self.height_field_raw = np.zeros((self.tot_rows , self.tot_cols), dtype=np.int16)
+        self.height_field_raw = np.zeros((self.tot_rows , self.tot_cols), dtype=np.int16)+500
         if cfg.curriculum:
             self.curiculum()
         elif cfg.selected:
@@ -79,6 +84,7 @@ class Terrain:
 
             choice = np.random.uniform(0, 1)
             difficulty = np.random.choice([0.25, 0.375, 0.45])
+            # difficulty = 0
             terrain = self.make_terrain(choice, difficulty)
             self.add_terrain_to_map(terrain, i, j)
         
@@ -86,6 +92,7 @@ class Terrain:
         for j in range(self.cfg.num_cols):
             for i in range(self.cfg.num_rows):
                 difficulty = i / self.cfg.num_rows
+                # difficulty = 0
                 choice = j / self.cfg.num_cols + 0.001
 
                 terrain = self.make_terrain(choice, difficulty)
@@ -113,7 +120,8 @@ class Terrain:
                                 vertical_scale=self.cfg.vertical_scale,
                                 horizontal_scale=self.cfg.horizontal_scale)
         slope = difficulty * 0.3
-        step_height = 0.01 + 0.115 * difficulty
+        step_height = 0.0 + 0.1 * difficulty
+        target_height = 0.0 + 3.0 * difficulty
         discrete_obstacles_height = 0.05 + difficulty * 0.075
         stepping_stones_size = 0.75 * (1.05 - difficulty)
         stone_distance = 0.05 if difficulty==0 else 0.05
@@ -139,6 +147,18 @@ class Terrain:
             terrain_utils.stepping_stones_terrain(terrain, stone_size=stepping_stones_size, stone_distance=stone_distance, max_height=0., platform_size=4.)
         elif choice < self.proportions[6]:
             gap_terrain(terrain, gap_size=gap_size, platform_size=3.)
+        elif choice < self.proportions[7]:
+            new_stair_terrain(terrain, step_width=1, step_height=step_height)
+        elif choice < self.proportions[8]:
+            new_stair_terrain(terrain, step_width=1, step_height=-step_height)
+        elif choice < self.proportions[9]: 
+            new_slope_terrain(terrain, step_width=1, target_height=target_height)
+        elif choice < self.proportions[10]: 
+            new_slope_terrain(terrain, step_width=1, target_height=-target_height)
+        elif choice < self.proportions[11]: 
+            new_rough_slope_terrain(terrain, step_width=1, target_height=target_height)
+        elif choice < self.proportions[12]: 
+            new_rough_slope_terrain(terrain, step_width=1, target_height=-target_height)
         else:
             pit_terrain(terrain, depth=pit_depth, platform_size=4.)
         
@@ -154,14 +174,25 @@ class Terrain:
         end_y = self.border + (j + 1) * self.width_per_env_pixels
         self.height_field_raw[start_x: end_x, start_y:end_y] = terrain.height_field_raw
 
-        env_origin_x = (i + 0.5) * self.env_length
+        # env_origin_x = (i + 0.5) * self.env_length
+        env_origin_x = (i) * self.env_length + 0.75
         env_origin_y = (j + 0.5) * self.env_width
-        x1 = int((self.env_length/2. - 1) / terrain.horizontal_scale)
-        x2 = int((self.env_length/2. + 1) / terrain.horizontal_scale)
-        y1 = int((self.env_width/2. - 1) / terrain.horizontal_scale)
-        y2 = int((self.env_width/2. + 1) / terrain.horizontal_scale)
+        # x1 = int((self.env_length/2. - 1) / terrain.horizontal_scale)
+        # x2 = int((self.env_length/2. + 1) / terrain.horizontal_scale)
+        # y1 = int((self.env_width/2. - 1) / terrain.horizontal_scale)
+        # y2 = int((self.env_width/2. + 1) / terrain.horizontal_scale)
+        x1 = int((0) / terrain.horizontal_scale)
+        x2 = int((0.3) / terrain.horizontal_scale)
+        y1 = int((0.05) / terrain.horizontal_scale)
+        y2 = int((self.env_width - 0.05) / terrain.horizontal_scale)
+        # pdb.set_trace()
         env_origin_z = np.max(terrain.height_field_raw[x1:x2, y1:y2])*terrain.vertical_scale
+        
+        env_target_x = i * 10 + 9.5
+        env_target_y = j * 10 + 5
+
         self.env_origins[i, j] = [env_origin_x, env_origin_y, env_origin_z]
+        self.env_targets[i, j] = [env_target_x, env_target_y]
 
 def gap_terrain(terrain, gap_size, platform_size=1.):
     gap_size = int(gap_size / terrain.horizontal_scale)
@@ -185,3 +216,112 @@ def pit_terrain(terrain, depth, platform_size=1.):
     y1 = terrain.width // 2 - platform_size
     y2 = terrain.width // 2 + platform_size
     terrain.height_field_raw[x1:x2, y1:y2] = -depth
+
+def new_stair_terrain(terrain, step_width, step_height):
+    """
+    Generate stairs
+
+    Parameters:
+        terrain (terrain): the terrain
+        step_width (float):  the width of the step [meters]
+        step_height (float): the step_height [meters]
+    Returns:
+        terrain (SubTerrain): update terrain
+    """
+    # switch parameters to discrete units
+    step_width = int(step_width / terrain.horizontal_scale)
+    step_height = int(step_height / terrain.vertical_scale)
+
+    height = 0
+    
+    start_width = 10
+    end_width = 10
+
+    start_x = start_width
+    stop_x = start_width + step_width
+    start_y = 0
+    stop_y = terrain.width
+    # print("Length: " +  str(terrain.length))
+    # print("Width: " + str(terrain.width))
+    # pdb.set_trace()
+    while (terrain.length - stop_x) > end_width:
+        height += step_height
+        terrain.height_field_raw[start_x: stop_x, start_y: stop_y] = height
+        start_x = stop_x
+        stop_x += step_width
+    terrain.height_field_raw[start_x: terrain.width, start_y: stop_y] = height
+    return terrain
+
+def new_slope_terrain(terrain, step_width, target_height):
+    """
+    Generate stairs
+
+    Parameters:
+        terrain (terrain): the terrain
+        step_width (float):  the width of the step [meters]
+        step_height (float): the step_height [meters]
+    Returns:
+        terrain (SubTerrain): update terrain
+    """
+    # switch parameters to discrete units
+    step_width = 0.1
+    step_width = int(step_width / terrain.horizontal_scale)
+    step_height = int(target_height / 80 / terrain.vertical_scale)
+
+    height = 0
+    
+    start_width = 10
+    end_width = 10
+
+    start_x = start_width
+    stop_x = start_width + step_width
+    start_y = 0
+    stop_y = terrain.width
+    # print("Length: " +  str(terrain.length))
+    # print("Width: " + str(terrain.width))
+    # pdb.set_trace()
+    while (terrain.length - stop_x) > end_width:
+        height += step_height
+        terrain.height_field_raw[start_x: stop_x, start_y: stop_y] = height
+        start_x = stop_x
+        stop_x += step_width
+    terrain.height_field_raw[start_x: terrain.width, start_y: stop_y] = height
+    return terrain
+def new_rough_slope_terrain(terrain, step_width, target_height):
+    """
+    Generate stairs
+
+    Parameters:
+        terrain (terrain): the terrain
+        step_width (float):  the width of the step [meters]
+        step_height (float): the step_height [meters]
+    Returns:
+        terrain (SubTerrain): update terrain
+    """
+    # switch parameters to discrete units
+    step_width = 0.1
+    step_width = int(step_width / terrain.horizontal_scale)
+    step_height = int(target_height / 80 / terrain.vertical_scale)
+
+    height = 0
+    
+    start_width = 10
+    end_width = 10
+
+    start_x = start_width
+    stop_x = start_width + step_width
+    start_y = 0
+    stop_y = terrain.width
+    # print("Length: " +  str(terrain.length))
+    # print("Width: " + str(terrain.width))
+    # pdb.set_trace()
+    while (terrain.length - stop_x) > end_width:
+        height += step_height
+        i = 0
+        while i < terrain.width:
+            terrain.height_field_raw[start_x: stop_x, i: i+1] = height + random.random()*(0.05/terrain.vertical_scale)
+            i = i+1
+        start_x = stop_x
+        stop_x += step_width
+    terrain.height_field_raw[start_x: terrain.width, start_y: stop_y] = height
+    return terrain

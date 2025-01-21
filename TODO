@@ -2,11 +2,32 @@ energy
 efficiency
 no wheel deep rl
 
+
+
+
+
 policy switching
-    2D vector attach to obersvations (descrete vector is clearer than continuous value)
+    Train selector through supervised learning - Done
     
-    
-    
-    Future: Supervised learning, LLM commands
+    Train flat, rough, & stair - Done
 
+    Week May 30 - June 4 Evaluate Policies: 
+        Velocity (graph with terrain)
+        Maximum & Average Terrain Training (Table) Done
+        Energy Consumption (graph with time)Done
+        Success Rate (table or graph with terrain) Done
+            Success Rate vs Terrain Level 
+        
+        Implementation: 
+            Logger code in play.py
+            CSV
 
+    Week June 4 - June 11 Mixture of experts: 
+        Optional: Use past joint position and velocities to calculate type of environment
+
+        Begin Writing Paper with Initial Figures
+
+    Week June 11 - June 18 Validation: 
+        All terrain learning vs specialized learning (Tables including velocity, terrain, energy, success)
+
+    Finish Writing Paper by July

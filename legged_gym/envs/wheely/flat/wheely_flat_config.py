@@ -54,7 +54,7 @@ class WheelyFlatCfg(WheelyRoughCfg):
         action_scale = 0.5
         use_actuator_network = False
     class rewards(WheelyRoughCfg.rewards):
-        base_height_target = 0.2
+        base_height_target = 0.25
         only_positive_rewards = False
         tracking_sigma = 0.25 # tracking reward = exp(-error^2/sigma)
         soft_dof_pos_limit = 1. # percentage of urdf limits, values above this limit are penalized
@@ -67,7 +67,7 @@ class WheelyFlatCfg(WheelyRoughCfg):
             tracking_ang_vel = 5.0
             lin_vel_z = -1
             ang_vel_xy = -0.00
-            orientation = -1.5
+            orientation = -0.01
             torques = -0.00001
             dof_vel = -0.
             # dof_acc = -2.5e-7
@@ -82,7 +82,7 @@ class WheelyFlatCfg(WheelyRoughCfg):
 
             collision = -5
             base_collision = 0
-            feet_collision = 0.1 #
+            feet_collision = 0. #
             dof_pos_limits = -10
             episode_length=0.00 #logarithmically increasing reward
             # terrain=1 

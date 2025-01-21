@@ -42,12 +42,12 @@ class WheelyRoughCfg( LeggedRobotCfg ):
         # num_actions = 12 #Not Wheeled
 
 
-    class terrain( LeggedRobotCfg.terrain ):
+    class terrain(LeggedRobotCfg.terrain ):
         mesh_type = 'trimesh'
 
     class init_state(LeggedRobotCfg.init_state):
-        pos = [0.0, 0.0, 0.35] # x,y,z [m]
-        rot = [0, 0, 0, 1]
+        pos = [0.0, 0.0, 0.375] # x,y,z [m]
+        rot = [0.0, 0.0, 0.707, 0.707]
         default_joint_angles = { # = target angles [rad] when action = 0.0
             # "FLHU": 0.0,
             # "BLHU": 0.0,
@@ -119,41 +119,72 @@ class WheelyRoughCfg( LeggedRobotCfg ):
         self_collisions = 0 # 1 to disable, 0 to enable...bitwise filter
   
     class rewards( LeggedRobotCfg.rewards ):
-        base_height_target = 0.275
+        base_height_target = 0.25
         only_positive_rewards = False
         tracking_sigma = 0.25 # tracking reward = exp(-error^2/sigma)
         soft_dof_pos_limit = 1. # percentage of urdf limits, values above this limit are penalized
-        soft_dof_vel_limit = 1.
-        soft_torque_limit = 1.
+        soft_dof_vel_limit = 1. 
+        soft_torque_limit = 1. 
         max_contact_force = 50 # forces above this value are penalized
         class scales(LeggedRobotCfg.rewards.scales):
-            termination = -3
-            tracking_lin_vel = 1.0
-            tracking_ang_vel = 0.5
-            lin_vel_z = -2
-            ang_vel_xy = -0.05
-            orientation = -0.0
-            torques = -0.00001
+            # termination = -0
+            # tracking_lin_vel = 5.0
+            # tracking_ang_vel = 5.0
+            # lin_vel_z = -2
+            # ang_vel_xy = -0.005
+            # orientation = -0.00
+            # torques = -2.5e-7
+            # dof_vel = -0.
+            # dof_acc = -2.5e-7
+            # base_height = -0.00
+            # feet_air_time = 0
+            
+            # feet_stumble = -0.0
+            # action_rate_derivative = -0.0025
+            # action_rate = -0.005  # this stops the agent from learning at the begining 
+            # stand_still = -0.
+            # # base_height = -0.01
+
+            # collision = -2.5
+            # base_collision = -5
+            # feet_collision = 0.001 #
+            # dof_pos_limits = -10
+            # episode_length=0.000 #logarithmically increasing reward
+            # terrain=0
+
+
+            termination = -200
+            tracking_lin_vel = 0
+            tracking_ang_vel = 0
+            lin_vel_z = -0.00
+            ang_vel_xy = -0.00
+            orientation = -0.000
+            torques = -2.5e-7
             dof_vel = -0.
             dof_acc = -2.5e-7
-            base_height = -0.0
-            feet_air_time = 0.5
+            base_height = -0.00
+            feet_air_time = 0.1
+            proximity = 0.1
+            position = 10
+            heading = 1
+
             
             feet_stumble = -0.0
             action_rate_derivative = -0.0025
-            action_rate = -0.01  # this stops the agent from learning at the begining 
+            action_rate = -0.0001  # this stops the agent from learning at the begining 
             stand_still = -0.
             # base_height = -0.01
 
-            collision = -5
-            base_collision = 0
-            feet_collision = 0.0 #
+            collision = -2.5
+            base_collision = -50
+            feet_collision = 0.00 #
             dof_pos_limits = -10
-            episode_length=0.0005 #logarithmically increasing reward
+            episode_length=0 #logarithmically increasing reward
             terrain=0
+
+
 
 class WheelyRoughCfgPPO( LeggedRobotCfgPPO ):
     class runner( LeggedRobotCfgPPO.runner ):
         run_name = ''
         experiment_name = 'rough_wheely'
-        load_run = -1

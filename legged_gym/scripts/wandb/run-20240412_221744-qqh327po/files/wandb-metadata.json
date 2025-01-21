@@ -1,0 +1,110 @@
+{
+    "os": "Linux-5.15.0-102-generic-x86_64-with-glibc2.29",
+    "python": "3.8.10",
+    "heartbeatAt": "2024-04-13T02:17:45.575235",
+    "startedAt": "2024-04-13T02:17:44.972436",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--task=wheely_rough"
+    ],
+    "state": "running",
+    "program": "./play.py",
+    "codePathLocal": "play.py",
+    "codePath": "legged_gym/scripts/play.py",
+    "git": {
+        "remote": "git@github.com:Wyzard1004/wheely-rsl_rl.git",
+        "commit": "395bfa3b4f2b5624362f01acc16baae25a8b533b"
+    },
+    "email": "williamzhang10042006@gmail.com",
+    "root": "/home/william/legged_gym",
+    "host": "william-desktop",
+    "username": "william",
+    "executable": "/usr/bin/python3",
+    "cpu_count": 6,
+    "cpu_count_logical": 12,
+    "cpu_freq": {
+        "current": 2528.86375,
+        "min": 2200.0,
+        "max": 3700.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 3275.559,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 3970.96,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 3700.898,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 4638.992,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2800.0,
+            "min": 2200.0,
+            "max": 3700.0
+        },
+        {
+            "current": 2200.0,
+            "min": 2200.0,
+            "max": 3700.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 915.8426170349121,
+            "used": 211.24661254882812
+        }
+    },
+    "gpu": "NVIDIA GeForce RTX 4060",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA GeForce RTX 4060",
+            "memory_total": 8585740288
+        }
+    ],
+    "memory": {
+        "total": 15.53506851196289
+    }
+}

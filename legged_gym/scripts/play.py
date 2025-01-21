@@ -35,17 +35,21 @@ import isaacgym
 from legged_gym.envs import *
 from legged_gym.utils import  get_args, export_policy_as_jit, task_registry, Logger
 
+import csv
+
 import numpy as np
 import torch
 
 
 def play(args):
+    
+
     env_cfg, train_cfg = task_registry.get_cfgs(name=args.task)
     # override some parameters for testing
-    env_cfg.env.num_envs = min(env_cfg.env.num_envs, 50)
-    env_cfg.terrain.num_rows = 5
-    env_cfg.terrain.num_cols = 5
-    env_cfg.terrain.curriculum = False
+    env_cfg.env.num_envs = env_cfg.env.num_envs #min(env_cfg.env.num_envs, 50)
+    env_cfg.terrain.num_rows = 10
+    env_cfg.terrain.num_cols = 20
+    env_cfg.terrain.curriculum = True
     env_cfg.noise.add_noise = False
     env_cfg.domain_rand.randomize_friction = False
     env_cfg.domain_rand.push_robots = False
@@ -53,6 +57,9 @@ def play(args):
     # prepare environment
     env, _ = task_registry.make_env(name=args.task, args=args, env_cfg=env_cfg)
     obs = env.get_observations()
+
+    logger = Logger(env.dt)
+
     # load policy
     train_cfg.runner.resume = True
     ppo_runner, train_cfg = task_registry.make_alg_runner(env=env, name=args.task, args=args, train_cfg=train_cfg)
@@ -67,7 +74,7 @@ def play(args):
     logger = Logger(env.dt)
     robot_index = 0 # which robot is used for logging
     joint_index = 1 # which joint is used for logging
-    stop_state_log = 100 # number of steps before plotting states
+    stop_state_log = 1500 # number of steps before plotting states
     stop_rew_log = env.max_episode_length + 1 # number of steps before print average episode rewards
     camera_position = np.array(env_cfg.viewer.pos, dtype=np.float64)
     camera_vel = np.array([1., 1., 0.])
@@ -84,8 +91,13 @@ def play(args):
     torque_sum_doc.write("")
     
     for i in range(10*int(env.max_episode_length)):
+        #TODO: Use selector to change policy variable
+        # if(selector = 0):
+        #     policy = 
         actions = policy(obs.detach())
         
+
+
         obs, _, rews, dones, infos = env.step(actions.detach())
         # pdb.set_trace()
         env.recordData()
@@ -105,14 +117,15 @@ def play(args):
                     'dof_pos': env.dof_pos[robot_index, joint_index].item(),
                     'dof_vel': env.dof_vel[robot_index, joint_index].item(),
                     'dof_torque': env.torques[robot_index, joint_index].item(),
-                    'command_x': env.commands[robot_index, 0].item(),
-                    'command_y': env.commands[robot_index, 1].item(),
-                    'command_yaw': env.commands[robot_index, 2].item(),
+                    'command_magnitude': env.commands[robot_index, 0].item(),
+                    'command_heading': env.commands[robot_index, 1].item(),
                     'base_vel_x': env.base_lin_vel[robot_index, 0].item(),
                     'base_vel_y': env.base_lin_vel[robot_index, 1].item(),
                     'base_vel_z': env.base_lin_vel[robot_index, 2].item(),
                     'base_vel_yaw': env.base_ang_vel[robot_index, 2].item(),
                     'contact_forces_z': env.contact_forces[robot_index, env.feet_indices, 2].cpu().numpy()
+                    # 'terrain_level_average'" env
+                    # Use CSV
                 }
             )
         elif i==stop_state_log:
@@ -124,6 +137,55 @@ def play(args):
                     logger.log_rewards(infos["episode"], num_episodes)
         elif i==stop_rew_log:
             logger.print_rewards()
+
+    lin_speed_doc.close()
+    ang_speed_doc.close()
+    torque_sum_doc.close()
+    logger.close()
+
+class Logger:
+    def __init__(self, dt):
+        self.dt = dt
+        self.state_log = []
+        self.rewards_log = []
+
+        # Initialize CSV files
+        self.state_csv_file = open('state_log.csv', 'w', newline='')
+        self.state_csv_writer = csv.writer(self.state_csv_file)
+        self.state_csv_writer.writerow([
+            'dof_pos_target', 'dof_pos', 'dof_vel', 'dof_torque',
+            'command_magnitude', 'command_heading', 'base_vel_x', 'base_vel_y',
+            'base_vel_z', 'base_vel_yaw', 'contact_forces_z'
+        ])
+
+        self.rewards_csv_file = open('rewards_log.csv', 'w', newline='')
+        self.rewards_csv_writer = csv.writer(self.rewards_csv_file)
+        self.rewards_csv_writer.writerow(['reward'])
+
+    def log_states(self, states):
+        self.state_log.append(states)
+        self.state_csv_writer.writerow([
+            states['dof_pos_target'], states['dof_pos'], states['dof_vel'], states['dof_torque'],
+            states['command_magnitude'], states['command_heading'], states['base_vel_x'], states['base_vel_y'],
+            states['base_vel_z'], states['base_vel_yaw'], states['contact_forces_z']
+        ])
+
+    def log_rewards(self, rewards, num_episodes):
+        self.rewards_log.append((rewards, num_episodes))
+        self.rewards_csv_writer.writerow([rewards])
+
+    def plot_states(self):
+        # Existing plotting code
+        pass
+
+    def print_rewards(self):
+        # Existing printing code
+        pass
+
+    def close(self):
+        self.state_csv_file.close()
+        self.rewards_csv_file.close()
+
 
 if __name__ == '__main__':
     EXPORT_POLICY = True

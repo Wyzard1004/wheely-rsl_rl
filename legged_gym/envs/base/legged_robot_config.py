@@ -29,6 +29,7 @@
 # Copyright (c) 2021 ETH Zurich, Nikita Rudin
 
 from .base_config import BaseConfig
+import math
 
 class LeggedRobotCfg(BaseConfig):
     class env:
@@ -39,56 +40,69 @@ class LeggedRobotCfg(BaseConfig):
         num_actions = 12
         env_spacing = 3.  # not used with heightfields/trimeshes 
         send_timeouts = True # send time out information to the algorithm
-        episode_length_s = 20 # episode length in seconds
+        episode_length_s = 60 # episode length in seconds
 
     class terrain:
         mesh_type = 'trimesh' # "heightfield" # none, plane, heightfield or trimesh
         horizontal_scale = 0.1 # [m]
         vertical_scale = 0.005 # [m]
-        border_size = 5 # [m]
+        border_size = 10 # [m]
         curriculum = True
         static_friction = 1.0
         dynamic_friction = 1.0
         restitution = 0.
         # rough terrain only:
         measure_heights = False
-        measured_points_x = [-0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8] # 1mx1.6m rectangle (without center line)
+        measured_points_x = [-0.5, -0.4, -0.3, -0.2, -0.1, 0., 0.1, 0.2, 0.3, 0.4, 0.5] # 1mx1m square (without center line)
         measured_points_y = [-0.5, -0.4, -0.3, -0.2, -0.1, 0., 0.1, 0.2, 0.3, 0.4, 0.5]
         selected = False # select a unique terrain type and pass all arguments
         terrain_kwargs = None # Dict of arguments for selected terrain
-        max_init_terrain_level = 5 # starting curriculum state
+        max_init_terrain_level = 9 # starting curriculum state
         terrain_length = 10.
         terrain_width = 10.
         num_rows= 10 # number of terrain rows (levels)
         num_cols = 20 # number of terrain cols (types)
-        # terrain types: [smooth slope, rough slope, stairs up, stairs down, discrete]
-        terrain_proportions = [0.1, 0.1, 0.35, 0.25, 0.2]
+        
+        # terrain types: 
+        # [0: smooth slope, 1: rough slope, 2: stairs up, 3: stairs down, 4: discrete, 
+        #  5: stepping stone, 6: gap, 7: new stairs up, 8: new stairs down, 9: smooth slope up
+        # 10: smooth slope down, 11: rough slope up, 12: rough slope down, 13: pit]
+        
+        # terrain_proportions = [0.1, 0.1, 0.35, 0.25, 0.2]
+        terrain_proportions = [0, 0, 0, 0, 0, 0, 0, 0.2, 0.2, 0.15, 0.15, 0.15, 0.15, 0]
+        #                      0, 1, 2, 3, 4, 5, 6, 7,   8,   9,    10    11    12    13
+        terrain_proportions = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
+
         # trimesh only:
-        slope_treshold = 0.75 # slopes above this threshold will be corrected to vertical surfaces
+        slope_treshold = 0.0 # slopes above this threshold will be corrected to vertical surfaces
 
     class commands:
         curriculum = False
         max_curriculum = 1.
         num_commands = 4 # default: lin_vel_x, lin_vel_y, ang_vel_yaw, heading (in heading mode ang_vel_yaw is recomputed from heading error)
-        resampling_time = 10. # time before command are changed[s]
-        heading_command = True # if true: compute ang vel command from heading error
+        resampling_time = 0.01 # time before command are changed[s]
+        heading_command = False # if true: compute ang vel command from heading error
         class ranges:
-            lin_vel_x = [0, 0] # min max [m/s]
-            lin_vel_y = [-2.5, -0.5]   # min max [m/s]
-            ang_vel_yaw = [-0.25, 0.25]    # min max [rad/s]
-            heading = [-0, 0]
+            # lin_vel_x = [-1, 1] # min max [m/s]
+            # lin_vel_y = [-2.5, -0.5]   # min max [m/s]
+            # ang_vel_yaw = [-0.25, 0.25]    # min max [rad/s]
+            # heading = [-0, 0]
             # lin_vel_x = [-0.0, 0.0] # min max [m/s]
             # lin_vel_y = [-1, 1]   # min max [m/s]
             # ang_vel_yaw = [0, 0]    # min max [rad/s]
             # heading = [0, 0]
-            # lin_vel_x = [-1.0, 1.0] # min max [m/s]
+            # lin_vel_x = [-0.5, 0.5] # min max [m/s]
             # lin_vel_y = [-1.0, 1.0]   # min max [m/s]
-            # ang_vel_yaw = [-1, 1]    # min max [rad/s]
-            # heading = [-3.14, 3.14]
+            
+            distance = [0.0, 15.0]
+            angleXY = [-math.pi, math.pi]
+
+            # ang_vel_yaw = [-0.25, 0.25]    # min max [rad/s]
+            # heading = [-0.785, 0.785]
 
     class init_state:
         pos = [0.0, 0.0, 1.] # x,y,z [m]
-        rot = [0.0, 0.0, 0.0, 1.0] # x,y,z,w [quat]
+        rot = [0.707, 0.0, 0.707, 1.0] # x,y,z,w [quat]
         lin_vel = [0.0, 0.0, 0.0]  # x,y,z [m/s]
         ang_vel = [0.0, 0.0, 0.0]  # x,y,z [rad/s]
         default_joint_angles = { # target angles when z = 0.0
@@ -154,7 +168,7 @@ class LeggedRobotCfg(BaseConfig):
             feet_air_time =  1.0
             collision = -1.
             feet_stumble = -0.0 
-            action_rate = -0.01
+            action_rate = -0.001
             stand_still = -0.
 
         only_positive_rewards = False # if true negative total rewards are clipped at zero (avoids early termination problems)
@@ -243,7 +257,7 @@ class LeggedRobotCfgPPO(BaseConfig):
         policy_class_name = 'ActorCritic'
         algorithm_class_name = 'PPO'
         num_steps_per_env = 24 # per iteration
-        max_iterations = 1500 # number of policy updates
+        max_iterations = 10000 # number of policy updates
 
         # logging
         save_interval = 50 # check for potential saves every this many iterations
@@ -255,6 +269,7 @@ class LeggedRobotCfgPPO(BaseConfig):
         recording_duration = 200
         # load and resume
         resume = False
-        load_run = "/home/william/legged_gym/logs/flat_wheely/Feb11_22-06-47_/model_1100.pt" # -1 = last run
-        checkpoint = -1 # -1 = last saved model
-        resume_path = "/home/william/legged_gym/logs/flat_wheely/Feb11_22-06-47_/model_1100.pt" # updated from load_run and chkpt
+        load_run =  "/home/william/legged_gym/logs/rough_wheely/Jul08_23-28-39_" # -1
+        checkpoint = 1250 # -1 = last saved model
+        resume_path = "/home/william/legged_gym/logs/rough_wheely/Jul08_23-28-39_/model_1250.pt" 
+        #"/home/william/legged_gym/logs/rough_wheely/May22_21-24-09_/model_2500.pt" # updated from load_run and chkpt # none 

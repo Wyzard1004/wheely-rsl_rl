@@ -1,0 +1,16 @@
+Loading model from: /home/william/legged_gym/logs/rough_wheely/Mar24_13-34-57_/model_3000.pt
+Exported policy as jit script to:  /home/william/legged_gym/logs/rough_wheely/exported/policies
+Average rewards per second:
+ - rew_action_rate: -0.18583950400352478
+ - rew_action_rate_derivative: -0.10830646753311157
+ - rew_ang_vel_xy: -0.05114400014281273
+ - rew_base_collision: -0.4202013909816742
+ - rew_collision: -0.4036003649234772
+ - rew_dof_acc: -0.523026168346405
+ - rew_dof_pos_limits: -0.5357347726821899
+ - rew_feet_collision: 0.0017457761568948627
+ - rew_lin_vel_z: -0.17521826922893524
+ - rew_torques: -0.00013971900625620037
+ - rew_tracking_ang_vel: 1.853127121925354
+ - rew_tracking_lin_vel: 1.917197823524475
+Total number of episodes: 50

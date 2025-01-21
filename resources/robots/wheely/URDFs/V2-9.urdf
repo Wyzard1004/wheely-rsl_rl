@@ -155,7 +155,7 @@
         </inertial>
     </link>
 
-    <joint name="FRW" type="revolute">
+    <joint name="FRW" type="continuous">
         <origin xyz="0 -0.09999999999999995004 -0.025499999999999981015"
             rpy="1.9733806694702264955e-23 -1.1152152026486324738e-23 1.57079632679489678" />
         <parent link="FRLL" />
@@ -303,7 +303,7 @@
         </inertial>
     </link>
 
-    <joint name="FLW" type="revolute">
+    <joint name="FLW" type="continuous">
         <origin xyz="-5.5511151231257827021e-17 0.10000000000000056066 -0.025499999999999994893"
             rpy="-1.7353970132847589299e-16 5.3303376734589298289e-17 -1.5707963267948992225" />
         <parent link="FLLL" />
@@ -454,7 +454,7 @@
         </inertial>
     </link>
 
-    <joint name="BLW" type="revolute">
+    <joint name="BLW" type="continuous">
         <origin xyz="0 0.10000000000000003331 -0.025500000000000022649"
             rpy="-3.6944196118392699176e-24 8.8577126057210653786e-24 1.570796326794896558" />
         <parent link="BLLL" />
@@ -603,7 +603,7 @@
         </inertial>
     </link>
 
-    <joint name="BRW" type="revolute">
+    <joint name="BRW" type="continuous">
         <origin xyz="0 -0.10000000000000014433 -0.025500000000000008771"
             rpy="-1.4611617380436203065e-24 -7.6761477915259036595e-24 -1.5707963267949449637" />
         <parent link="BRLL" />
